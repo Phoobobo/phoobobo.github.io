@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Phoobobo Studio">
 <meta property="og:description" content="方法定义强类型的语言所以参数和返回值必须定义类型123fun sum(a: Int, b: Int): Int &amp;#123;    return a + b&amp;#125; 像上例中，如果函数体只有一个表达式，而且能推断出返回类型时，可以写成这样：1fun sum(a: Int, b: Int) = a + b 如果无返回类型，那么返回类型可以写12345#### 声明变量只读变量，相当于Java中用">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-25T08:20:07.717Z">
+<meta property="og:updated_time" content="2017-11-25T09:39:55.008Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin介绍系列（二）基本语法">
 <meta name="twitter:description" content="方法定义强类型的语言所以参数和返回值必须定义类型123fun sum(a: Int, b: Int): Int &amp;#123;    return a + b&amp;#125; 像上例中，如果函数体只有一个表达式，而且能推断出返回类型时，可以写成这样：1fun sum(a: Int, b: Int) = a + b 如果无返回类型，那么返回类型可以写12345#### 声明变量只读变量，相当于Java中用">
@@ -371,7 +371,67 @@
 <p>或者用Kotlin的判断语句表达式<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> l = <span class="keyword">if</span> (b != <span class="literal">null</span>) b.length <span class="keyword">else</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
 <p>还有一种最便利的安全操作符?.<br>比如<figure class="highlight plain"><figcaption><span>l </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这种最方便于链式调用，比如</span><br><span class="line">```Kotlin</span><br><span class="line">bob?.department?.name?.head</span><br></pre></td></tr></table></figure></p>
 <p>过程中有任意一项为空，表达式都会返回null</p>
-<p><a href="http://www.jianshu.com/p/b310390a3d76" target="_blank" rel="noopener">Kotlin介绍系列（二）基本语法（2）</a></p>
+<h4 id="is-反义是-is-与自动类型转换"><a href="#is-反义是-is-与自动类型转换" class="headerlink" title="is(反义是!is)与自动类型转换"></a>is(反义是!is)与自动类型转换</h4><p>is操作符是用来判断一个对象是否是一个类型的实例<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getStringLength</span><span class="params">(obj: <span class="type">Any</span>)</span></span>: <span class="built_in">Int</span>? &#123;</span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">is</span> String) &#123;</span><br><span class="line">        <span class="comment">// `obj` is automatically cast to `String` in this branch</span></span><br><span class="line">        <span class="keyword">return</span> obj.length</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// `obj` is still of type `Any` outside of the type-checked branch</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的例子可以看出，经过is进行类型检查以后，就没有必要进行类型转换了，对象会自动转换成被检查的类型。</p>
+<h4 id="when——一个更优秀的switch替代品"><a href="#when——一个更优秀的switch替代品" class="headerlink" title="when——一个更优秀的switch替代品"></a>when——一个更优秀的switch替代品</h4><p>when结构里的判断项相当的灵活，可以是一个常量，也可以是表达式（函数，类型检查，范围等）。举例说明：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">when</span> (x) &#123;</span><br><span class="line">    <span class="number">0</span>, <span class="number">1</span> -&gt; print(<span class="string">"x == 0 or x == 1"</span>)</span><br><span class="line">    <span class="number">2</span> -&gt; print(<span class="string">"x ==2"</span>)</span><br><span class="line">    <span class="keyword">else</span> -&gt; print(<span class="string">"otherwise"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">when</span> (x) &#123;</span><br><span class="line">    <span class="keyword">in</span> <span class="number">1.</span><span class="number">.10</span> -&gt; print(<span class="string">"x is in the range"</span>)</span><br><span class="line">    <span class="keyword">in</span> validNumbers -&gt; print(<span class="string">"x is valid"</span>)</span><br><span class="line">    !<span class="keyword">in</span> <span class="number">10.</span><span class="number">.20</span> -&gt; print(<span class="string">"x is outside the range"</span>)</span><br><span class="line">    <span class="keyword">else</span> -&gt; print(<span class="string">"none of the above"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasPrefix</span><span class="params">(x: <span class="type">Any</span>)</span></span> = <span class="keyword">when</span>(x) &#123;</span><br><span class="line">    <span class="keyword">is</span> String -&gt; x.startsWith(<span class="string">"prefix"</span>)</span><br><span class="line">    <span class="keyword">else</span> -&gt; <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>when还可以用作多重if／else选择的替代：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">when</span> &#123;</span><br><span class="line">    x.isOdd() -&gt; print(<span class="string">"x is odd"</span>)</span><br><span class="line">    x.isEven() -&gt; print(<span class="string">"x is even"</span>)</span><br><span class="line">    <span class="keyword">else</span> -&gt; print(<span class="string">"x is funny"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="as强制类型转换"><a href="#as强制类型转换" class="headerlink" title="as强制类型转换"></a>as强制类型转换</h4><p>首先声明强制类型转换是非安全的，可能抛出异常。<br>e.g.:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> x: String = y <span class="keyword">as</span> String</span><br></pre></td></tr></table></figure></p>
+<p>注意如果y可以为null，而null是不可以转换成String的，就会抛出异常。<br>怎么改正呢？<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> x: String? = y <span class="keyword">as</span> String?</span><br></pre></td></tr></table></figure></p>
+<p>前后都可以为空对象。</p>
+<h4 id="in-范围判断"><a href="#in-范围判断" class="headerlink" title="in 范围判断"></a>in 范围判断</h4><p>先介绍一下在kotlin中可以这样表示范围如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">配合in操作符就可以理解其表示的含义</span><br><span class="line">e.g..:</span><br><span class="line">```Kotlin</span><br><span class="line">if (i in 1..10) &#123; // equivalent of 1 &lt;= i &amp;&amp; i &lt;= 10</span><br><span class="line">    println(i)</span><br><span class="line">&#125;</span><br><span class="line">for (i in 1..4) print(i) // prints &quot;1234&quot;</span><br><span class="line">for (i in 4..1) print(i) // prints nothing</span><br><span class="line">for (i in 4 downTo 1) print(i) // prints &quot;4321&quot;</span><br><span class="line">for (i in 1..4 step 2) print(i) // prints &quot;13&quot;</span><br><span class="line">for (i in 1 until 10) &#123; // i in [1, 10), 10 is excluded 不包括10，注意⚠️</span><br><span class="line">println(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Collections集合与循环／判断"><a href="#Collections集合与循环／判断" class="headerlink" title="Collections集合与循环／判断"></a>Collections集合与循环／判断</h4><ul>
+<li><p>迭代器与集合<br>和其他语言类似：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (item <span class="keyword">in</span> items) &#123;</span><br><span class="line">    println(item)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断元素与集合的关系</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">when</span> &#123;</span><br><span class="line">      <span class="string">"orange"</span> <span class="keyword">in</span> items -&gt; println(<span class="string">"juicy"</span>)</span><br><span class="line">      <span class="string">"apple"</span> <span class="keyword">in</span> items -&gt; println(<span class="string">"apple is fine too"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="可见性修饰"><a href="#可见性修饰" class="headerlink" title="可见性修饰"></a>可见性修饰</h4><p>Kotlin有四种可见性修饰符：private, protected, internal, public<br>用法见下面表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">修饰符</th>
+<th style="text-align:center">顶级（声明在package底下）</th>
+<th style="text-align:center">类级（声明在一个类里）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">private</td>
+<td style="text-align:center">当前文件可见</td>
+<td style="text-align:center">只当前类可见</td>
+</tr>
+<tr>
+<td style="text-align:center">protected</td>
+<td style="text-align:center">(不可直接在包下使用此声明)</td>
+<td style="text-align:center">当前类及其子类可见</td>
+</tr>
+<tr>
+<td style="text-align:center">internal</td>
+<td style="text-align:center">当前module可见</td>
+<td style="text-align:center">当前module可见</td>
+</tr>
+<tr>
+<td style="text-align:center">public</td>
+<td style="text-align:center">随处可见</td>
+<td style="text-align:center">随处可见</td>
+</tr>
+</tbody>
+</table>
+<p>值得注意的是，如果不做修饰，默认则是public</p>
+<p>例子：</p>
+<ul>
+<li><p>顶级</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// file name: example.kt</span><br><span class="line">package foo</span><br><span class="line">private fun foo() &#123;&#125; // visible inside example.kt</span><br><span class="line">public var bar: Int = 5 // property is visible everywhere</span><br><span class="line">private set // setter is visible only in example.kt</span><br><span class="line">internal val baz = 6 // visible inside the same module</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>类级</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">open class Outer &#123;</span><br><span class="line">    private val a = 1</span><br><span class="line">    protected open val b = 2</span><br><span class="line">    internal val c = 3</span><br><span class="line">    val d = 4 // public by default</span><br><span class="line">    protected class Nested &#123;</span><br><span class="line">        public val e: Int = 5</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Subclass : Outer() &#123;</span><br><span class="line">    // a is not visible</span><br><span class="line">    // b, c and d are visible</span><br><span class="line">    // Nested and e are visible</span><br><span class="line">    override val b = 5 // &apos;b&apos; is protected</span><br><span class="line">&#125;</span><br><span class="line">class Unrelated(o: Outer) &#123;</span><br><span class="line">    // o.a, o.b are not visible</span><br><span class="line">    // o.c and o.d are visible (same module)</span><br><span class="line">    // Outer.Nested is not visible, and Nested::e is not visible either</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="可继承声明"><a href="#可继承声明" class="headerlink" title="可继承声明"></a>可继承声明</h4><p>继承修饰符open（与java的final相对），使用Kotlin声明一个可以被继承的类必须冠以open</p>
 
       
     </div>
@@ -428,6 +488,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/22/Kotlin高级特性之代理模式/" rel="prev" title="Kotlin介绍系列（三）高级特性之Delegation">
+                Kotlin介绍系列（三）高级特性之Delegation <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -520,7 +584,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -582,7 +646,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法定义"><span class="nav-number">1.</span> <span class="nav-text">方法定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串模板"><span class="nav-number">2.</span> <span class="nav-text">字符串模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空安全"><span class="nav-number">3.</span> <span class="nav-text">空安全</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法定义"><span class="nav-number">1.</span> <span class="nav-text">方法定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串模板"><span class="nav-number">2.</span> <span class="nav-text">字符串模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空安全"><span class="nav-number">3.</span> <span class="nav-text">空安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#is-反义是-is-与自动类型转换"><span class="nav-number">4.</span> <span class="nav-text">is(反义是!is)与自动类型转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#when——一个更优秀的switch替代品"><span class="nav-number">5.</span> <span class="nav-text">when——一个更优秀的switch替代品</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#as强制类型转换"><span class="nav-number">6.</span> <span class="nav-text">as强制类型转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#in-范围判断"><span class="nav-number">7.</span> <span class="nav-text">in 范围判断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections集合与循环／判断"><span class="nav-number">8.</span> <span class="nav-text">Collections集合与循环／判断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可见性修饰"><span class="nav-number">9.</span> <span class="nav-text">可见性修饰</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可继承声明"><span class="nav-number">10.</span> <span class="nav-text">可继承声明</span></a></li></ol></div>
             
 
           </div>
@@ -644,12 +708,6 @@
       </div>
     
 
-    
-      <div id="needsharebutton-float">
-        <span class="btn">
-          <i class="fa fa-share-alt" aria-hidden="true"></i>
-        </span>
-      </div>
     
 
   </div>
@@ -930,18 +988,6 @@
       
       new needShareButton('#needsharebutton-postbottom', pbOptions);
     
-    
-      flOptions = {};
-      
-          flOptions.iconStyle = "box";
-      
-          flOptions.boxForm = "horizontal";
-      
-          flOptions.position = "middleRight";
-      
-          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
-      
-      new needShareButton('#needsharebutton-float', flOptions);
     
   </script>
 
