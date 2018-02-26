@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="进击的Android工程师">
+<meta name="description" content="0.52以后redbox不是系统级的了，所以一旦activity初始化出现问题，那么我们如果没有控制台日志，就无从得到相关错误提示。那么怎么解决初始化时候的问题呢？肯定要先加载bundle unable to load script from assets ‘index.android bundle’  ,make s">
 <meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta property="og:title" content="Phoobobo Studio">
+<meta property="og:url" content="http://yoursite.com/drafts/react-native杂碎.html">
 <meta property="og:site_name" content="Phoobobo Studio">
-<meta property="og:description" content="进击的Android工程师">
+<meta property="og:description" content="0.52以后redbox不是系统级的了，所以一旦activity初始化出现问题，那么我们如果没有控制台日志，就无从得到相关错误提示。那么怎么解决初始化时候的问题呢？肯定要先加载bundle unable to load script from assets ‘index.android bundle’  ,make sure your bundle is packaged correctly or">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-25T07:07:06.008Z">
+<meta property="og:updated_time" content="2018-02-07T04:29:59.884Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
-<meta name="twitter:description" content="进击的Android工程师">
+<meta name="twitter:title" content="Phoobobo Studio">
+<meta name="twitter:description" content="0.52以后redbox不是系统级的了，所以一旦activity初始化出现问题，那么我们如果没有控制台日志，就无从得到相关错误提示。那么怎么解决初始化时候的问题呢？肯定要先加载bundle unable to load script from assets ‘index.android bundle’  ,make sure your bundle is packaged correctly or">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/"/>
+  <link rel="canonical" href="http://yoursite.com/drafts/react-native杂碎.html"/>
 
 
 
 
 
-  <title>categories | Phoobobo Studio</title>
+  <title> | Phoobobo Studio</title>
   
 
 
@@ -255,7 +255,7 @@
     <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
+	<h1 class="post-title" itemprop="name headline"></h1>
 
 
 
@@ -267,14 +267,13 @@
       <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                目前共计 2 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ReactNative/">ReactNative</a><span class="category-list-count">1</span></li></ul>
-            </div>
-          </div>
+          <p>0.52以后redbox不是系统级的了，所以一旦activity初始化出现问题，那么我们如果没有控制台日志，就无从得到相关错误提示。<br>那么怎么解决初始化时候的问题呢？<br>肯定要先加载bundle</p>
+<p>unable to load script from assets ‘index.android bundle’  ,make sure your bundle is packaged correctly or youu’re runing a packager server</p>
+<p>react-native bundle –platform android –dev false –entry-file index.android.js –bundle-output<br>android/app/src/main/assets/index.android.bundle –assets-dest android/app/src/main/res/  </p>
+<p>新版本使用下面的命令</p>
+<p>react-native bundle –platform android –dev false –entry-file index.js –bundle-output<br>android/app/src/main/assets/index.android.bundle –assets-dest android/app/src/main/res/ </p>
+<p>注意:[./android/app/src/main/assets/]文件夹存在, 不存在则新建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source=&#123;&#123; html: content.content, baseUrl: &apos;&apos; &#125;&#125;// baseUrl: &apos;&apos;中文乱码解决</span><br></pre></td></tr></table></figure>
         
       </div>
       
@@ -566,9 +565,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/categories/index.html';
-          this.page.identifier = 'categories/index.html';
-          this.page.title = 'categories';
+          this.page.url = 'http://yoursite.com/drafts/react-native杂碎.html';
+          this.page.identifier = 'drafts/react-native杂碎.html';
+          this.page.title = '';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://Phoobobo.disqus.com/embed.js';
