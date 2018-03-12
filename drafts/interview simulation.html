@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="#Android #Java#">
+<meta name="description" content="一定要有自己的见解！ #Android ####Activity的启动模式都有哪些？分别适用怎样的场景？Standard 默认场景SingleTop 如果当前的栈有目标Activity的实例，就把它之上的Activity出栈 适合收到通知以后SingleTaskSingleInstance ###架构模式 ####MV">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Phoobobo Studio">
 <meta property="og:url" content="http://yoursite.com/drafts/interview simulation.html">
 <meta property="og:site_name" content="Phoobobo Studio">
-<meta property="og:description" content="#Android #Java#">
+<meta property="og:description" content="一定要有自己的见解！ #Android ####Activity的启动模式都有哪些？分别适用怎样的场景？Standard 默认场景SingleTop 如果当前的栈有目标Activity的实例，就把它之上的Activity出栈 适合收到通知以后SingleTaskSingleInstance ###架构模式 ####MVPModel （Base）View (Base)Presenter Contra">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-26T07:52:37.377Z">
+<meta property="og:updated_time" content="2018-03-12T08:02:38.075Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Phoobobo Studio">
-<meta name="twitter:description" content="#Android #Java#">
+<meta name="twitter:description" content="一定要有自己的见解！ #Android ####Activity的启动模式都有哪些？分别适用怎样的场景？Standard 默认场景SingleTop 如果当前的栈有目标Activity的实例，就把它之上的Activity出栈 适合收到通知以后SingleTaskSingleInstance ###架构模式 ####MVPModel （Base）View (Base)Presenter Contra">
 
 
 
@@ -267,8 +267,88 @@
       <div class="post-body">
         
         
-          <p>#Android</p>
-<p>#Java<br>#</p>
+          <p>一定要有自己的见解！</p>
+<p>#Android</p>
+<p>####Activity的启动模式都有哪些？分别适用怎样的场景？<br>Standard 默认场景<br>SingleTop 如果当前的栈有目标Activity的实例，就把它之上的Activity出栈 适合收到通知以后<br>SingleTask<br>SingleInstance</p>
+<p>###架构模式</p>
+<p>####MVP<br>Model （Base）View (Base)Presenter Contract(业务)<br>页面实现View的接口 持有Presenter的实例<br>Presenter的实现类持有View的实例，这样就可以在Presenter中告诉View应该做什么，怎么做由View自己通过接口的实现来决定</p>
+<p>####Android内存优化</p>
+<p>#####内存泄漏<br>定义：没有用的对象到GC Roots是可达的，导致GC无法回收该对象。</p>
+<p><strong><em>非静态内部类和匿名内部类会持有外部类的隐式引用，而容易导致内存泄漏</em></strong></p>
+<p>举例：</p>
+<p>1 非静态内部类的实例是静态的</p>
+<p>2 匿名内部类AnsycTask, TimerTask, Thread, Runnable, Handler（比如postDelay等待处理延时消息时）等执行耗时任务时，Activity被销毁却不会被回收，悲惨得处在了生命周期之外。</p>
+<p><strong><em>解决办法：不偷懒写匿名内部类，写静态内部类</em></strong></p>
+<p>3 Handler内存泄漏（重点提出来）</p>
+<p><strong><em>解决办法： 静态内部Handler类，Handler持有的对象要使用弱引用，并且在Activity的onDestroy方法中移除MessageQueue中的消息mHandler.removeCallbacksAdndMessages(null)<br>或者直接使用WeakHandler</em></strong></p>
+<p>4 未正确使用Context（尽量使用ApplicationContex）</p>
+<p>5 资源对象（Cursor、File）未关闭</p>
+<p>6 集合中的对象没清理</p>
+<p>7 Bitmap对象</p>
+<p>8 监听器未关闭</p>
+<p>####排查内存泄露的工具<br>Android Profile、 DDMS、 Mat、 LeakCanary</p>
+<p>##IPC（Inter-Process Communication）进程间通信<br>Bundle 文件共享 AIDL Messenger ContentProvider Socket</p>
+<p>###Binder</p>
+<p>####原理：<br>角色：</p>
+<ul>
+<li>用户空间 Server、Client、ServiceManager</li>
+<li>内核空间 Binder</li>
+</ul>
+<p>过程：Server创建Binder实体，驱动为这个实体创建引用，注册到ServiceManager，Client通过访问这个引用获取调用Server的方法。</p>
+<p><strong>优势：AIDL是对Binder的一种封装 Ashmem(Anonymous Shared Memory)机制减少文件的拷贝次数</strong></p>
+<p>####使用：<br>编写IXXXManager和数据类Parcelable AIDL接口，编译 -&gt; 创建Service 其中binder对象是实现IXXXManager.Stub的匿名内部类的实例 -&gt; 绑定Service。</p>
+<p>####注意：<br>因此调用服务端方法时，应开启子线程，防止UI线程堵塞，导致ANR。</p>
+<p>###Handler</p>
+<p>###数据库<br>SQLite</p>
+<p>##NDK<br>1 定义native方法</p>
+<p>2 依赖NDK，使用ndk-build命令编译C/C++文件，（配置mk文件），生成so库</p>
+<p>3 引用so库</p>
+<p>##开源库<br><strong>需要说的，首先是怎样使用，其次是我们使用的功能在内部是怎样实现的，实现方案里有什么技巧，什么架构的思路。</strong></p>
+<h3 id="OkHttp"><a href="#OkHttp" class="headerlink" title="OkHttp"></a>OkHttp</h3><p><strong>Interceptor.Chain</strong>责任链模式<br>1 new OkHttpBuilder对象<br>2 enque newCall(request)<br>3 response.body</p>
+<h3 id="Retrofit"><a href="#Retrofit" class="headerlink" title="Retrofit"></a>Retrofit</h3><p>底层基于OKHttp<br>外观模式<br>注解<br>创建API实例是使用了动态代理模式. </p>
+<p>####概述<br>基于运行时注解，优点是不用操心线程切换</p>
+<p>####使用<br>1 引入依赖（别忘了converter gson） 添加访问网络权限准备<br>2 创建请求接口，其中接口方法添加注解，返回参数类型为自己定义的数据类model<br>注解分为：<br>请求方法注解：@GET @POST @HEAD 等<br>标记注解：@FormUrlEncoded(表单请求) @Multipart(文件上传) @Streaming(下载大文件)<br>参数注解：@Path @Field @FieldMap @Body @Header @Part(文件上传)<br>3 使用建造者Retrofit.Builder构建Retrofit对象，主要是baseUrl和ConverterFactory<br>4 使用上一步retrofit对象的create方法生成第2步的接口的动态代理对象<br>5 调用上一步的对象的求情方法得到Call对象<br>6 使用Call对象请求网络并处理回调</p>
+<p>####原理<br><em>根据使用的步骤探究每一步的实现思路</em><br>1 Retrofit::create返回代理对象实例，其中每次调用接口方法都会被InvocationHandler拦截处理。<br>2 进入invoke方法，看拦截之后的具体行为。<br>1）首先检查方法是否缓存，同一个API的同一个方法只会创建一次。<br>2）通过loadServiceMethod得到ServiceMethod对象（对应一个API Interface的方法）。重点关注ServiceMethod构造方法里的几个构造：<br>callFactory: 默认是OKHttpClient对象<br><strong>callAdapter</strong>: Call适配器，由Retrofit提供，遍历CallAdapter.Factory新建Retrofit时使用，举例如果要和RxJava配合使用，则需要在初始化时这样做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Retrofit retrofit = new Retrofit.Builder()</span><br><span class="line">    .baseUrl(&quot;https://example.com/&quot;)</span><br><span class="line">    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure></p>
+<p>相应的配置依赖：<br><code>compile &#39;com.squareup.retrofit2:adapter-rxjava2:latest.version&#39;</code></p>
+<p>responseConverter: Converter.Factory<br>parameterHandlers: parseParameter</p>
+<p>以上构造方法里的几个参数使用了工厂模式，让各个配置各司其职，完美完成解藕<br>3）得到call对象和使用call的enqueue或者execute方法，都会使用到上一步的东西，比如工厂生产出来的东西</p>
+<p><strong>CallAdapter.Factory文章比较大，和RxJava关系紧密，重点单独讲</strong></p>
+<h3 id="Volley"><a href="#Volley" class="headerlink" title="Volley"></a>Volley</h3><p>适用于数据量不大但通信频繁的网络操作<br>基于请求队列RequestQueue<br>StringRequest JsonRequest ImageRequest ImageLoader NetworkImageView</p>
+<h3 id="EventBus"><a href="#EventBus" class="headerlink" title="EventBus"></a>EventBus</h3><p>Publish/Subscribe消息总线<br>简化了应用程序内组件间，组件与后台线程的通信<br>Subscriber注解<br>threadmode<br>sticky<br>priority</p>
+<h3 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h3><p><strong>响应式编程，优雅处理异步数据流,观察者模式</strong><br>Observer/Subscriber<br>Observable<br>Schedualer  </p>
+<p>####基本使用<br>1 new Observer, implements onNext onComplete onError onStart(事件未发送的时候做一些准备工作)<br>2 <code>Observable observable = Observable.create(new Observable.OnSubscribe&lt;&gt;(){}...</code> or <code>Observable observable = Observable.just(事件序列);</code> or<br><code>Observable.from()</code><br>3 <code>observable.subscribe(observer)</code> 也可以订阅不完全observer Action0 Action1 Action2 012代表call函数的参数数量</p>
+<p>####map &amp; flatMap<br>前者针对单个事件，后者针对事件序列，重新变换成新的Observable对象序列</p>
+<p>####Schedualer<br>进程调度<br>subscribeOn（OnSubscribe发生的线程，即事件产生的线程）<br>observeOn(Subsciber运行的线程，即事件消费的线程)<br>immediate,io,new Thread, computation, AndroidSchedualers.mainThread</p>
+<p>##Android安全</p>
+<p>####Parcelable和Serializable如何选取？<br>两者都可以实现对象序列化。<br>Parcelbale是android特有的，是Bundle通信的数据载体，开销比较小。<br>进程间通信（在内存间传输时）采用Parcelable，网络请求数据的序列化采用Serializable。</p>
+<p>实现：对于Serializable，类只需要实现Serializable接口，并提供一个序列化版本id(serialVersionUID)即可。而Parcelable则需要实现writeToParcel、describeContents函数以及静态的CREATOR变量</p>
+<p>#Java</p>
+<p>###HashMap ArrayMap SparseArray</p>
+<p>####HashMap的实现原理<br>首先对key值求hash，根据hash结构确定其在数组中的位置，当出现hash冲突时采用开放链地址法进行处理。Map.Entity的数据结构为 key value hash next节点</p>
+<p>####SparseArray<br>key为int时使用，因为int可以代替hash，不需要装箱操作。在时间空间上都比较优秀。但是时针对小数据。</p>
+<p>##JVM</p>
+<p>####内存分区<br>程序计数器、Java虚拟机栈、本地方法栈、Java堆、方法区<br>线程共享内存区（Java堆、方法区），线程私有内存区（虚拟机栈、本地方法栈、程序计数器）</p>
+<p>####垃圾回收算法<br>引用计数法：缺点无法处理循环引用的问题<br>标记清除算法Mark-Sweep：缺点是造成内存不连续<br>复制算法：缺点是代价是内存折半。 适用于新生代<br>标记压缩算法：适用于老年代<br>分代算法：</p>
+<p>####Java对象生命周期</p>
+<p>##集合</p>
+<p>##并发</p>
+<p>###锁机制<br>条件对象 condition<br>wait（阻塞当前线程，并放弃锁） notify condition.signalAll</p>
+<p>synchronized 获得对象锁</p>
+<p>静态的锁顺序死锁，动态的锁顺序死锁，协作对象之间的死锁（在持有锁的情况下调用外部方法）</p>
+<p>##JNI</p>
+<p>#Algorithm &amp; DataStructure</p>
+<p>###常用的数据结构及其内部实现</p>
+<p>####ArrayList</p>
+<p>####LinkedList</p>
+<p>####HashMap</p>
+<p>####ConcurrentHashMap</p>
+<p>####SparseArray</p>
+<p>#设计模式</p>
+<p>#Common sense of Computer Science</p>
+<p>#项目要点<br>遇到的bug怎么解决的</p>
+<p>遇到的问题怎么优化的。</p>
+<p>途秀：（video全屏， native TextureView）(欢迎动画的控制）<br>侃侃： 表情翻译插件SpannableString TextView 状态栏定制<br>NCL: 参考FetchBlob sslContext.init trustAllCerts OkHttpClient.Builder hostNameVerifier verify方法返回true<br>TXIM: 插件 工厂模式<br>Eyepetizer: mvp rxjava retrofit<br>MediaRecorder MediaButtonReceiver<br>图表插件的修改扩充：添加折线图下的渐变阴影</p>
+<p>#自我介绍<br>教育经历，工作经历，兴趣<br>学习，解决问题的能力</p>
 
         
       </div>
@@ -323,8 +403,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -404,6 +493,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OkHttp"><span class="nav-number">1.</span> <span class="nav-text">OkHttp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Retrofit"><span class="nav-number">2.</span> <span class="nav-text">Retrofit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Volley"><span class="nav-number">3.</span> <span class="nav-text">Volley</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EventBus"><span class="nav-number">4.</span> <span class="nav-text">EventBus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RxJava"><span class="nav-number">5.</span> <span class="nav-text">RxJava</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
