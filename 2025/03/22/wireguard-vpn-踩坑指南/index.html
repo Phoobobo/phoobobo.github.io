@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Phoobobo Studio">
 <meta property="og:description" content="其实根据官方文档，一步步操作是没问题的，但是一开始我没看就趟坑了。列出几点⚠️注意事项吧： 1 不要在‘Build-&amp;gt;Generate Signed Ask…’这个步骤下去生成签名打包的apk，因为这样生成的apk没法打包js部分，打开应用会直接报错，因为缺少JS Bundle. 2 如果你的应用引用第三方库比较多，可能会报如下多错误  com.android.dex.DexIndexOve">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2026-04-05T15:00:00T+0800+08:00">
+<meta property="og:updated_time" content="2025-03-22T10:54:00T+0800+08:00">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactNative工程打包注意事项">
 <meta name="twitter:description" content="其实根据官方文档，一步步操作是没问题的，但是一开始我没看就趟坑了。列出几点⚠️注意事项吧： 1 不要在‘Build-&amp;gt;Generate Signed Ask…’这个步骤下去生成签名打包的apk，因为这样生成的apk没法打包js部分，打开应用会直接报错，因为缺少JS Bundle. 2 如果你的应用引用第三方库比较多，可能会报如下多错误  com.android.dex.DexIndexOve">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</h1>
+          <h1 class="post-title" itemprop="name headline">WireGuard VPN 配置完全踩坑指南</h1>
         
 
         <div class="post-meta">
@@ -292,7 +292,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-05T15:00:00T+0800+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-03-22T10:54:00T+0800+08:00">
                 2017-05-06
               </time>
             
@@ -369,71 +369,86 @@
     
     
     <div class="post-body" itemprop="articleBody">
-<h1>我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</h1>
-<p>> 五个 AI Agent，各司其职，全天候自动运转——这是我用一个下午完成的事情。</p>
+<h1>WireGuard VPN 配置完全踩坑指南</h1>
+<h2>一、问题背景</h2>
+<p>搭建一台 WireGuard VPN 服务器（Linux），客户端使用 macOS + WireGuard 官方客户端。能成功建立隧道连接（`wg show` 显示 handshake 正常），但**无法访问互联网**，DNS 解析失败。</p>
 <p>---</p>
-<h2>一、背景：为什么要搞多智能体？</h2>
-<p>我一直在用 [OpenClaw](https://github.com/nicepkg/openclaw) 跑 AI Agent。最初只是把几个 Agent 挂在飞书群里聊天用，但用着用着发现一个问题：**它们太"被动"了**。</p>
-<p>Agent 只会回复消息，不会主动做事。没有工作流，没有定时任务，没有收入产出。它们更像是几个等待投喂的聊天机器人，而不是真正的"团队成员"。</p>
-<p>于是我决定做一次彻底重建——不是调调参数，而是从身份定义、模型策略、自动化调度、到收入管线，全部推倒重来。</p>
+<h2>二、症状清单</h2>
+<p>1. 能 ping 通 VPN 服务器虚拟 IP（`10.0.0.1`）<br>2. 无法 ping 外网 IP（`ping 8.8.8.8` 超时）<br>3. DNS 解析失败（`dig google.com` 无响应）<br>4. `curl ifconfig.me` 超时<br>5. 客户端路由表：默认网关仍走本地（`en1`），而非 `utun4`</p>
 <p>---</p>
-<h2>二、团队阵容</h2>
-<p>重建后的五人阵容：</p>
-<p>| Agent | 代号 | 角色 | 语言 |<br>|-------|------|------|------|<br>| **Judy 💖** | main | 总调度 / 管家 | 中英双语 |<br>| **Phoenix 🦅** | coding | 全栈开发 / 开源 | English |<br>| **Mike ⚙️** | devops | 运维 / 基础设施 | English |<br>| **Shirly ✍️** | momo | 内容创作 / 自媒体 | 中文 |<br>| **xueqin 📜** | litterature | 小说写作导师 | 中文 |</p>
-<p>每个 Agent 都有完整的 `SOUL.md`（身份定义）、`IDENTITY.md`（自我认知）、`USER.md`（对我的了解）和 `HEARTBEAT.md`（自主工作指令）。</p>
+<h2>三、排查过程与踩坑点</h2>
+<p>### 坑 1：客户端 AllowedIPs 配置错误</p>
+<p>**现象：**  <br>`wg show` 显示 `allowed ips: 10.0.0.2/32`</p>
+<p>**原因：**  <br>客户端的 `[Peer]` 配置中 `AllowedIPs` 设置为 `10.0.0.2/32`，表示**只有访问 `10.0.0.2` 的流量才走 VPN**。</p>
+<p>**解决：**  <br>改为 `AllowedIPs = 0.0.0.0/0`（所有 IPv4 流量走 VPN）：</p>
+<p>```ini<br>[Peer]<br>PublicKey = <服务器公钥><br>Endpoint = <服务器IP>:51820<br>AllowedIPs = 0.0.0.0/0<br>PersistentKeepalive = 25<br>```</p>
+<p>**验证：**  <br>重启 WG 后 `wg show` 应显示 `allowed ips: 0.0.0.0/0`</p>
 <p>---</p>
-<h2>三、四大子项目</h2>
-<p>整个重建拆成了四个子项目，按依赖顺序执行。</p>
-<p>### SP1: 基础重建（Foundation Rebuild）</p>
-<p>**核心改动：**</p>
-<p>- **模型策略统一**：所有 Agent 统一使用 `github-copilot/gpt-5-mini` 作为主模型，配合 OpenRouter（免费额度）和 Ollama 本地模型作为降级方案<br>- **身份体系重写**：五个 Agent 的 SOUL/IDENTITY/USER 全部重写，明确性格、能力边界、语言偏好<br>- **配置清理**：API Key 迁移到环境变量，移除硬编码密钥，per-agent `models.json` 精简为连接信息<br>- **Token 上限**：`maxTokens` 从默认值提升到 16384</p>
-<p>**模型降级链：**</p>
-<p>```<br>gpt-5-mini (Copilot) → stepfun/step-3.5-flash (OpenRouter免费) → qwen3.5:35b (Ollama本地) → gemma4:e4b (Ollama本地)<br>```</p>
-<p>这样即使 Copilot API 出问题，Agent 也不会完全停摆。</p>
-<p>### SP2: 自动化引擎（Automation Engine）</p>
-<p>之前只有一个孤零零的 DevOps 日报 cron job。重建后变成了 **Judy 主导的三段式调度**：</p>
-<p>| 时间 | 任务 | 说明 |<br>|------|------|------|<br>| 08:00 | 晨间派发 | Judy 检查 Apple Reminders，扫描各 Agent 状态，分派任务 |<br>| 14:00 | 午间巡检 | 检查进度，催促无产出的 Agent，协调阻塞 |<br>| 22:00 | 夜间总结 | 生成日报，通过飞书私信发给我 |</p>
-<p>每个 Agent 的 `HEARTBEAT.md` 也从空文件变成了具体的自主工作指令——Agent 被唤醒时知道该做什么，而不是等着被告知。</p>
-<p>### SP3: 内容管线（Revenue: Content Pipeline）</p>
-<p>Shirly 从"聊天机器人"升级为**自媒体内容引擎**：</p>
-<p>- **目标平台**：小红书 + 微信公众号<br>- **内容存储**：`~/shirley-content/`，包含 queue（待发布）、published（已发布）、archive（归档）<br>- **模板系统**：JSON 格式的平台模板（标题字数限制、标签规则、封面规格等）<br>- **浏览器自动化**：基于 Playwright + Edge 的发布脚本，支持 cookie 会话管理<br>- **日常流程**：调研选题 → 撰写内容 → 生成封面 → 自动发布</p>
-<p>```<br>~/shirley-content/<br>├── queue/          # 待发布内容（JSON 格式）<br>├── published/      # 已发布归档<br>├── archive/        # 历史内容<br>├── templates/      # 平台模板（xiaohongshu.json, weixin.json）<br>├── scripts/        # Playwright 发布脚本<br>└── .sessions/      # 平台 cookie 会话<br>```</p>
-<p>### SP4: 编码管线（Revenue: Coding Pipeline）</p>
-<p>Phoenix 的定位是**自主开源开发者**：</p>
-<p>- **项目管线**：`~/workspace-phoenix/pipeline/` — ideas → active → shipped<br>- **收入模式**：开源项目 + GitHub Sponsors + 产品化<br>- **工作流程**：发现趋势 → 评估可行性 → 原型开发 → 迭代打磨 → 发布到 GitHub<br>- **完全自主**：无需我审批，Phoenix 自行决定做什么项目</p>
+<p>### 坑 2：macOS DNS 配置不自动应用</p>
+<p>**现象：**  <br>即使配置文件中有 `DNS = 1.1.1.1, 8.8.8.8`，`/etc/resolv.conf` 仍然显示本地 DNS（`192.168.0.1`）。</p>
+<p>**原因：**  <br>macOS 使用 `scutil` 管理 DNS，不会自动读取 WireGuard 的 DNS 设置。</p>
+<p>**解决：**  <br>手动设置系统 DNS：</p>
+<p>```bash<br>sudo networksetup -setdnsservers "Wi-Fi" 1.1.1.1 8.8.8.8<br>```</p>
+<p>或添加 PostUp 脚本（需要 sudoers 配置）：</p>
+<p>```ini<br>PostUp = sudo networksetup -setdnsservers "Wi-Fi" 1.1.1.1 8.1.1.1<br>PostDown = sudo networksetup -setdnsservers "Wi-Fi" Empty<br>```</p>
 <p>---</p>
-<h2>四、踩过的坑</h2>
-<p>### 坑 1：配置校验比想象中严格</p>
-<p>OpenClaw 的 `openclaw.json` 有严格的 schema 校验。我们在 `agents.defaults.model` 里加了 `fallback` 数组：</p>
-<p>```json<br>{<br>  "primary": "github-copilot/gpt-5-mini",<br>  "fallback": ["openrouter/stepfun/step-3.5-flash:free", "ollama/qwen3.5:35b"]<br>}<br>```</p>
-<p>结果 gateway 直接拒绝启动：`agents.defaults.model: Invalid input`。</p>
-<p>正确做法是 `model` 只接受 `{"primary": "<alias>"}` 的格式，模型列表在 `models` 字段定义。降级逻辑由 OpenClaw 框架根据 `models` 里的可用模型自动处理。</p>
-<p>### 坑 2：Per-Agent compaction 不被支持</p>
-<p>想给 coding 和 litterature 两个 Agent 设置 `compaction: auto`（因为它们上下文消耗大），结果：</p>
-<p>```<br>agents.list.1: Unrecognized key: "compaction"<br>```</p>
-<p>`compaction` 只能放在 `agents.defaults` 级别，不能放在单个 Agent 的配置里。所有 Agent 共享同一个 compaction 策略。</p>
-<p>### 坑 3：Playwright 的浏览器选择</p>
-<p>默认 Playwright 会下载 Chromium，但我的 Mac 上主力浏览器是 Edge。需要在脚本里显式指定：</p>
-<p>```javascript<br>const browser = await chromium.launch({ channel: 'msedge' });<br>```</p>
-<p>这样可以复用已有的 Edge 安装和 cookie，不需要额外下载几百 MB 的 Chromium。</p>
+<p>### 坑 3：服务端缺少 NAT 转发</p>
+<p>**现象：**  <br>隧道握手正常，抓包有双向 UDP 通信，但客户端 ping 外网 IP 超时。</p>
+<p>**原因：**  <br>服务端 IP 转发或 NAT 规则未配置，收到的 `10.0.0.2` 流量无法转发到外网。</p>
+<p>**解决：**  <br>在服务端配置 NAT 并启用 IP 转发：</p>
+<p>```bash<br># 1. 启用 IP 转发<br>echo 'net.ipv4.ip_forward=1' | sudo tee /etc/sysctl.d/99-wg.conf<br>sudo sysctl -p /etc/sysctl.d/99-wg.conf</p>
+<h1>2. 添加 iptables NAT 规则（修改接口名）
+sudo iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE
+sudo iptables -A FORWARD -i wg0 -j ACCEPT
+```</h1>
+<p>持久化（保存规则）：<br>```bash<br># Ubuntu/Debian<br>sudo netfilter-persistent save</p>
+<h1>CentOS/RHEL
+sudo service iptables save
+```</h1>
+<p>或在 `wg0.conf` 中配置：</p>
+<p>```ini<br>[Interface]<br>PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE<br>PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o enp1s0 -j MASQUERADE<br>```</p>
+<p>**注意：** `enp1s0` 必须替换为实际的外网接口名（用 `ip link show` 查看）。这是我踩的最大的坑——配置成了 `eth0`，结果一直不生效！</p>
 <p>---</p>
-<h2>五、架构全景</h2>
-<p>```<br>~/.openclaw/<br>├── openclaw.json           # 中央配置（模型、Agent、工具、通道）<br>├── .env                    # 环境变量（API Key）<br>├── cron/jobs.json          # 4 个定时任务<br>├── agents/                 # 5 个 Agent 的运行时配置<br>│   ├── main/               # Judy<br>│   ├── coding/             # Phoenix<br>│   ├── devops/             # Mike<br>│   ├── momo/               # Shirly<br>│   └── litterature/        # xueqin<br>├── workspace*/             # 各 Agent 的工作空间<br>│   ├── SOUL.md             # 身份定义<br>│   ├── IDENTITY.md         # 自我认知<br>│   ├── USER.md             # 用户画像<br>│   ├── HEARTBEAT.md        # 自主工作指令<br>│   └── memory/             # 持久化记忆<br>└── docs/superpowers/       # 设计文档和实施计划<br>    ├── specs/              # 4 份设计规格<br>    └── plans/              # 4 份实施计划</p>
-<p>~/shirley-content/          # Shirly 的内容管线（独立于 openclaw）<br>~/workspace-phoenix/        # Phoenix 的项目管线<br>```</p>
+<p>### 坑 4：MTU 导致 DNS 查询失败</p>
+<p>**现象：**  <br>`dig @1.1.1.1 google.com` 超时，但 `ping 1.1.1.1` 正常。</p>
+<p>**原因：**  <br>WireGuard 默认 MTU 1420，加上 UDP 封装后可能超过链路的 MTU，导致大包（如 DNS 查询超过 512 字节）丢包。</p>
+<p>**解决：**  <br>降低 MTU 到 1280：</p>
+<p>```ini<br>[Interface]<br>MTU = 1280<br>```</p>
+<p>或根据实际情况调整（1200~1400 之间）。</p>
 <p>---</p>
-<h2>六、效果与展望</h2>
-<p>重建完成后，运行 `openclaw gateway restart`，整个系统立即生效：</p>
-<p>- ✅ Judy 每天三次自动巡检和调度<br>- ✅ Phoenix 自主探索开源项目机会<br>- ✅ Shirly 进入内容创作工作流<br>- ✅ Mike 按时提交运维日报<br>- ✅ xueqin 持续小说写作辅导</p>
-<p>**下一步计划：**</p>
-<p>1. 观察运行数据，调整 cron 频率和 heartbeat 策略<br>2. 小红书和公众号开通后，验证 Playwright 自动发布流程<br>3. 为 Phoenix 的项目配置 GitHub Sponsors<br>4. 考虑加入数据库替代 Markdown 做指标追踪<br>5. 扩展 Shirly 到抖音/微博等更多平台</p>
+<p>### 坑 5：服务端 IP 转发未启用</p>
+<p>**现象：**  <br>NAT 规则已加，但客户端仍无法访问。</p>
+<p>**检查：**<br>```bash<br>sysctl net.ipv4.ip_forward  # 应为 1<br>```</p>
+<p>**解决：**<br>```bash<br>echo 'net.ipv4.ip_forward=1' | sudo tee /etc/sysctl.d/99-wg.conf<br>sudo sysctl -p /etc/sysctl.d/99-wg.conf<br>```</p>
 <p>---</p>
-<h2>七、写在最后</h2>
-<p>搭建这套系统的过程本身就很有趣——我用 AI Agent（GitHub Copilot）来设计和实现另一组 AI Agent 的工作流。这种"AI 造 AI"的体验让我意识到：</p>
-<p>**多智能体系统的核心不是技术，而是组织设计。**</p>
-<p>模型选哪个、参数调多少，这些都是战术问题。真正关键的是：每个 Agent 的职责边界在哪里？它们之间怎么协作？谁来做决策？谁来兜底？</p>
-<p>这跟管理一个真实的团队没什么两样。</p>
+<h2>四、完整配置示例</h2>
+<p>### 服务端 `/etc/wireguard/wg0.conf`</p>
+<p>```ini<br>[Interface]<br>PrivateKey = <服务器私钥><br>Address = 10.0.0.1/24<br>ListenPort = 51820<br># 关键：外网接口名必须正确（通过 ip link show 查看）<br>PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE<br>PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o enp1s0 -j MASQUERADE</p>
+<p>[Peer]<br>PublicKey = <客户端公钥><br>AllowedIPs = 10.0.0.2/32<br>```</p>
+<p>### 客户端 `/etc/wireguard/wg0.conf`</p>
+<p>```ini<br>[Interface]<br>PrivateKey = <客户端私钥><br>Address = 10.0.0.2/24<br>DNS = 1.1.1.1, 8.8.8.8<br>MTU = 1280</p>
+<p>[Peer]<br>PublicKey = <服务器公钥><br>Endpoint = <服务器公网IP>:51820<br>AllowedIPs = 0.0.0.0/0<br>PersistentKeepalive = 25<br>```</p>
 <p>---</p>
-<p>*本文撰写于 2026 年 4 月 5 日。整个重建过程在一个下午内完成，包括设计、实施、调试和验证。*</p>
+<h2>五、验证步骤</h2>
+<p>```bash<br># 服务端<br>sudo wg-quick down wg0 && sudo wg-quick up wg0<br>sudo wg show</p>
+<h1>客户端
+sudo wg-quick down wg0 && sudo wg-quick up wg0
+wg show | grep "allowed ips"  # 确认是 0.0.0.0/0
+netstat -rn | grep default    # 确认走 utun</h1>
+<h1>测试
+ping -c 3 8.8.8.8
+dig google.com
+curl ifconfig.me  # 应显示服务器 IP
+```</h1>
+<p>---</p>
+<h2>六、总结</h2>
+<p>WireGuard 配置虽然简单，但三个关键点缺一不可：</p>
+<p>1. **客户端 `AllowedIPs`** → 决定哪些流量走 VPN<br>2. **服务端 IP 转发 + NAT** → 让客户端流量能出去并返回<br>3. **DNS 配置** → macOS 需手动设置</p>
+<p>按这个清单逐项检查，应该能搞定大部分 WireGuard 上网问题。</p>
+<p>---</p>
+<p>**最坑的一点：** NAT 规则的 `-o` 参数必须是服务端**实际的外网接口名**，不能想当然地写成 `eth0`。  <br>用 `ip link show` 确认接口名，这是配置成功的关键！</p>
+<p>---</p>
+<p>*发布于 2025-03-22，记录一次完整的 WireGuard 排错过程。*</p>
 
 </div>
     
