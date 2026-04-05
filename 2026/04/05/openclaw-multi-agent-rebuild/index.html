@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ReactNative,数据库," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是一篇找猫的主人的游戏。 Realm是一种非常高效便捷的移动端数据库框架。本文主要结合搜索并快速展示结果的实现，彰显realm在处理关系型数据库时的便捷高效。对于Realm还不了解的看官，请移步官方文档。 以下均以ReactNative上用到的RealmJS为例。 在表中定义Inverse Relationships">
+<meta name="keywords" content="ReactNative,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录">
+<meta property="og:url" content="http://yoursite.com/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/index.html">
+<meta property="og:site_name" content="Phoobobo Studio">
+<meta property="og:description" content="这是一篇找猫的主人的游戏。 Realm是一种非常高效便捷的移动端数据库框架。本文主要结合搜索并快速展示结果的实现，彰显realm在处理关系型数据库时的便捷高效。对于Realm还不了解的看官，请移步官方文档。 以下均以ReactNative上用到的RealmJS为例。 在表中定义Inverse RelationshipsRealm在定义关系数据时，并不能自动解释反向关系。比如定义了Lucky是你的猫">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2026-04-05T07:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录">
+<meta name="twitter:description" content="这是一篇找猫的主人的游戏。 Realm是一种非常高效便捷的移动端数据库框架。本文主要结合搜索并快速展示结果的实现，彰显realm在处理关系型数据库时的便捷高效。对于Realm还不了解的看官，请移步官方文档。 以下均以ReactNative上用到的RealmJS为例。 在表中定义Inverse RelationshipsRealm在定义关系数据时，并不能自动解释反向关系。比如定义了Lucky是你的猫">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/"/>
+
+
+
+
+
+  <title>我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录 | Phoobobo Studio</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f7f7397425e2555cf97c6c985ccbb03d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Phoobobo Studio</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Phoobobo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Phoobobo Studio">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2026-04-05T07:00:00+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ReactNative/" itemprop="url" rel="index">
+                    <span itemprop="name">ReactNative</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/" class="leancloud_visitors" data-flag-title="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+<h1>我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</h1>
+<p>> 五个 AI Agent，各司其职，全天候自动运转——这是我用一个下午完成的事情。</p>
+<h2>一、背景：为什么要搞多智能体？</h2>
+<p>我一直在用 [OpenClaw](https://github.com/nicepkg/openclaw) 跑 AI Agent。最初只是把几个 Agent 挂在飞书群里聊天用，但用着用着发现一个问题：**它们太"被动"了**。</p>
+<p>Agent 只会回复消息，不会主动做事。没有工作流，没有定时任务，没有收入产出。它们更像是几个等待投喂的聊天机器人，而不是真正的"团队成员"。</p>
+<p>于是我决定做一次彻底重建——不是调调参数，而是从身份定义、模型策略、自动化调度、到收入管线，全部推倒重来。</p>
+<h2>二、团队阵容</h2>
+<p>重建后的五人阵容：</p>
+<p>| Agent | 代号 | 角色 | 语言 |<br>|-------|------|------|------|<br>| **Judy 💖** | main | 总调度 / 管家 | 中英双语 |<br>| **Phoenix 🦅** | coding | 全栈开发 / 开源 | English |<br>| **Mike ⚙️** | devops | 运维 / 基础设施 | English |<br>| **Shirly ✍️** | momo | 内容创作 / 自媒体 | 中文 |<br>| **xueqin 📜** | litterature | 小说写作导师 | 中文 |</p>
+<p>每个 Agent 都有完整的 `SOUL.md`（身份定义）、`IDENTITY.md`（自我认知）、`USER.md`（对我的了解）和 `HEARTBEAT.md`（自主工作指令）。</p>
+<h2>三、四大子项目</h2>
+<p>整个重建拆成了四个子项目，按依赖顺序执行。</p>
+<p>### SP1: 基础重建（Foundation Rebuild）</p>
+<p>**核心改动：**</p>
+<p>- **模型策略统一**：所有 Agent 统一使用 `github-copilot/gpt-5-mini` 作为主模型，配合 OpenRouter（免费额度）和 Ollama 本地模型作为降级方案<br>- **身份体系重写**：五个 Agent 的 SOUL/IDENTITY/USER 全部重写，明确性格、能力边界、语言偏好<br>- **配置清理**：API Key 迁移到环境变量，移除硬编码密钥，per-agent `models.json` 精简为连接信息<br>- **Token 上限**：`maxTokens` 从默认值提升到 16384</p>
+<p>**模型降级链：**</p>
+<p>```<br>gpt-5-mini (Copilot) → stepfun/step-3.5-flash (OpenRouter免费) → qwen3.5:35b (Ollama本地) → gemma4:e4b (Ollama本地)<br>```</p>
+<p>这样即使 Copilot API 出问题，Agent 也不会完全停摆。</p>
+<p>### SP2: 自动化引擎（Automation Engine）</p>
+<p>之前只有一个孤零零的 DevOps 日报 cron job。重建后变成了 **Judy 主导的三段式调度**：</p>
+<p>| 时间 | 任务 | 说明 |<br>|------|------|------|<br>| 08:00 | 晨间派发 | Judy 检查 Apple Reminders，扫描各 Agent 状态，分派任务 |<br>| 14:00 | 午间巡检 | 检查进度，催促无产出的 Agent，协调阻塞 |<br>| 22:00 | 夜间总结 | 生成日报，通过飞书私信发给我 |</p>
+<p>每个 Agent 的 `HEARTBEAT.md` 也从空文件变成了具体的自主工作指令——Agent 被唤醒时知道该做什么，而不是等着被告知。</p>
+<p>### SP3: 内容管线（Revenue: Content Pipeline）</p>
+<p>Shirly 从"聊天机器人"升级为**自媒体内容引擎**：</p>
+<p>- **目标平台**：小红书 + 微信公众号<br>- **内容存储**：`~/shirley-content/`，包含 queue（待发布）、published（已发布）、archive（归档）<br>- **模板系统**：JSON 格式的平台模板（标题字数限制、标签规则、封面规格等）<br>- **浏览器自动化**：基于 Playwright + Edge 的发布脚本，支持 cookie 会话管理<br>- **日常流程**：调研选题 → 撰写内容 → 生成封面 → 自动发布</p>
+<p>```<br>~/shirley-content/<br>├── queue/          # 待发布内容（JSON 格式）<br>├── published/      # 已发布归档<br>├── archive/        # 历史内容<br>├── templates/      # 平台模板（xiaohongshu.json, weixin.json）<br>├── scripts/        # Playwright 发布脚本<br>└── .sessions/      # 平台 cookie 会话<br>```</p>
+<p>### SP4: 编码管线（Revenue: Coding Pipeline）</p>
+<p>Phoenix 的定位是**自主开源开发者**：</p>
+<p>- **项目管线**：`~/workspace-phoenix/pipeline/` — ideas → active → shipped<br>- **收入模式**：开源项目 + GitHub Sponsors + 产品化<br>- **工作流程**：发现趋势 → 评估可行性 → 原型开发 → 迭代打磨 → 发布到 GitHub<br>- **完全自主**：无需我审批，Phoenix 自行决定做什么项目</p>
+<h2>四、踩过的坑</h2>
+<p>### 坑 1：配置校验比想象中严格</p>
+<p>OpenClaw 的 `openclaw.json` 有严格的 schema 校验。我们在 `agents.defaults.model` 里加了 `fallback` 数组：</p>
+<p>```json<br>{<br>  "primary": "github-copilot/gpt-5-mini",<br>  "fallback": ["openrouter/stepfun/step-3.5-flash:free", "ollama/qwen3.5:35b"]<br>}<br>```</p>
+<p>结果 gateway 直接拒绝启动：`agents.defaults.model: Invalid input`。</p>
+<p>正确做法是 `model` 只接受 `{"primary": "<alias>"}` 的格式，模型列表在 `models` 字段定义。降级逻辑由 OpenClaw 框架根据 `models` 里的可用模型自动处理。</p>
+<p>### 坑 2：Per-Agent compaction 不被支持</p>
+<p>想给 coding 和 litterature 两个 Agent 设置 `compaction: auto`（因为它们上下文消耗大），结果：</p>
+<p>```<br>agents.list.1: Unrecognized key: "compaction"<br>```</p>
+<p>`compaction` 只能放在 `agents.defaults` 级别，不能放在单个 Agent 的配置里。所有 Agent 共享同一个 compaction 策略。</p>
+<p>### 坑 3：Playwright 的浏览器选择</p>
+<p>默认 Playwright 会下载 Chromium，但我的 Mac 上主力浏览器是 Edge。需要在脚本里显式指定：</p>
+<p>```javascript<br>const browser = await chromium.launch({ channel: 'msedge' });<br>```</p>
+<p>这样可以复用已有的 Edge 安装和 cookie，不需要额外下载几百 MB 的 Chromium。</p>
+<h2>五、架构全景</h2>
+<p>```<br>~/.openclaw/<br>├── openclaw.json           # 中央配置（模型、Agent、工具、通道）<br>├── .env                    # 环境变量（API Key）<br>├── cron/jobs.json          # 4 个定时任务<br>├── agents/                 # 5 个 Agent 的运行时配置<br>│   ├── main/               # Judy<br>│   ├── coding/             # Phoenix<br>│   ├── devops/             # Mike<br>│   ├── momo/               # Shirly<br>│   └── litterature/        # xueqin<br>├── workspace*/             # 各 Agent 的工作空间<br>│   ├── SOUL.md             # 身份定义<br>│   ├── IDENTITY.md         # 自我认知<br>│   ├── USER.md             # 用户画像<br>│   ├── HEARTBEAT.md        # 自主工作指令<br>│   └── memory/             # 持久化记忆<br>└── docs/superpowers/       # 设计文档和实施计划<br>    ├── specs/              # 4 份设计规格<br>    └── plans/              # 4 份实施计划</p>
+<p>~/shirley-content/          # Shirly 的内容管线（独立于 openclaw）<br>~/workspace-phoenix/        # Phoenix 的项目管线<br>```</p>
+<h2>六、效果与展望</h2>
+<p>重建完成后，运行 `openclaw gateway restart`，整个系统立即生效：</p>
+<p>- ✅ Judy 每天三次自动巡检和调度<br>- ✅ Phoenix 自主探索开源项目机会<br>- ✅ Shirly 进入内容创作工作流<br>- ✅ Mike 按时提交运维日报<br>- ✅ xueqin 持续小说写作辅导</p>
+<p>**下一步计划：**</p>
+<p>1. 观察运行数据，调整 cron 频率和 heartbeat 策略<br>2. 小红书和公众号开通后，验证 Playwright 自动发布流程<br>3. 为 Phoenix 的项目配置 GitHub Sponsors<br>4. 考虑加入数据库替代 Markdown 做指标追踪<br>5. 扩展 Shirly 到抖音/微博等更多平台</p>
+<h2>七、写在最后</h2>
+<p>搭建这套系统的过程本身就很有趣——我用 AI Agent（GitHub Copilot）来设计和实现另一组 AI Agent 的工作流。这种"AI 造 AI"的体验让我意识到：</p>
+<p>**多智能体系统的核心不是技术，而是组织设计。**</p>
+<p>模型选哪个、参数调多少，这些都是战术问题。真正关键的是：每个 Agent 的职责边界在哪里？它们之间怎么协作？谁来做决策？谁来兜底？</p>
+<p>这跟管理一个真实的团队没什么两样。</p>
+<p>*本文撰写于 2026 年 4 月 5 日。整个重建过程在一个下午内完成，包括设计、实施、调试和验证。*</p>
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ReactNative/" rel="tag"># ReactNative</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/24/Kotlin高级特性之object/" rel="next" title="Kotlin介绍系列（三）高级特性之object">
+                <i class="fa fa-chevron-left"></i> Kotlin介绍系列（三）高级特性之object
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="Phoobobo" />
+            
+              <p class="site-author-name" itemprop="name">Phoobobo</p>
+              <p class="site-description motion-element" itemprop="description">进击的Android工程师</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Phoobobo" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:phoobobo@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在表中定义Inverse-Relationships"><span class="nav-number">1.</span> <span class="nav-text">在表中定义Inverse Relationships</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将具体属性写入数据表"><span class="nav-number">2.</span> <span class="nav-text">将具体属性写入数据表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将搜索结果直接对应到响应的对象"><span class="nav-number">3.</span> <span class="nav-text">将搜索结果直接对应到响应的对象</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Phoobobo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Phoobobo.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/';
+          this.page.identifier = '2018/01/18/我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录/';
+          this.page.title = '我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Phoobobo.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("fWH58FHaWwFCx6jl1W87MD8j-gzGzoHsz", "1jw68rxuH3yzCTPDLjCnvkkA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
