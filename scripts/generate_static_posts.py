@@ -35,7 +35,9 @@ if not template_path:
 
 print('Using template:', template_path)
 
-# helper to slugify filename\ndef slug_from_filename(fname):
+# helper to slugify filename
+
+def slug_from_filename(fname):
     base = os.path.basename(fname)
     if base.count('-') >= 3:
         parts = base.split('-')
