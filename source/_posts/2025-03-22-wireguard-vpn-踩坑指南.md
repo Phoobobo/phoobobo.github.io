@@ -12,6 +12,8 @@ tags: [WireGuard, VPN, 踩坑]
 
 搭建一台 WireGuard VPN 服务器（Linux），客户端使用 macOS + WireGuard 官方客户端。能成功建立隧道连接（`wg show` 显示 handshake 正常），但**无法访问互联网**，DNS 解析失败。
 
+<!-- more -->
+
 ---
 
 ## 二、症状清单
