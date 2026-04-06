@@ -1,9 +1,9 @@
-name: Generate and publish posts
+name: Pages
 
 on:
   push:
-    paths:
-      - '_posts/**'
+    branches:
+      - main
 
 jobs:
   build:
@@ -11,24 +11,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
-      - name: Setup Python
-        uses: actions/setup-python@v4
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install markdown
-      - name: Generate static posts
-        run: |
-          python scripts/generate_static_posts.py
-      - name: Commit generated files
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Generate static posts (GitHub Actions)\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" || echo "No changes to commit"
-          git push origin HEAD:${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-version: "20"
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: hexo-site/node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+      - name: Copy posts to Hexo source
+        run: cp _posts/*.md hexo-site/source/_posts/
+      - name: Install Dependencies
+        run: cd hexo-site && npm install
+      - name: Build
+        run: cd hexo-site && npm run build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./hexo-site/public
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

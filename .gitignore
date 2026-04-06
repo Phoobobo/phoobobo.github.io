@@ -1,0 +1,4 @@
+hexo-site/node_modules/
+hexo-site/public/
+hexo-site/.deploy_git/
+hexo-site/db.json
