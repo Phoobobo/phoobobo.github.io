@@ -20,20 +20,18 @@ jobs:
       - name: Cache NPM dependencies
         uses: actions/cache@v4
         with:
-          path: hexo-site/node_modules
+          path: node_modules
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
-      - name: Copy posts to Hexo source
-        run: cp _posts/*.md hexo-site/source/_posts/
       - name: Install Dependencies
-        run: cd hexo-site && npm install
+        run: npm install
       - name: Build
-        run: cd hexo-site && npm run build
+        run: npm run build
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./hexo-site/public
+          path: ./public
 
   deploy:
     needs: build
