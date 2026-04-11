@@ -26,6 +26,22 @@ tags: [moshi, copilot, tailscale, 远程开发, 踩坑]
 
 Moshi配置很简单，坑全在tailscale。只要tailscale社区版+服务启动+顺序对，Moshi就能愉快vibe coding。
 
+## 5. 让手机也能科学上网：Tailscale Exit Node
+
+如果你电脑上同时用着别的VPN和tailscale，而手机只能连一个VPN，但又想让手机和电脑一样科学上网，可以把电脑的tailscale设置成exit node，然后让手机tailscale连它，这样手机的流量就都走电脑了，和电脑体验一致。
+
+### 操作细节
+
+1. 在电脑上运行：
+   ```bash
+   sudo tailscale up --advertise-exit-node --ssh
+   ```
+   这样电脑会作为exit node并支持ssh。
+2. 打开 tailscale admin 控制台，找到你的电脑节点，点击“Edit route settings”，允许其作为exit node。
+3. 在手机端 tailscale 选择电脑节点作为 exit-node，手机流量即可全部走电脑。
+
+设置方法可参考tailscale官方文档：[Exit Nodes](https://tailscale.com/kb/1103/exit-nodes/)
+
 ## 配图
 
 ![tailscale社区版安装命令](uploads/tailscale-install.png)
