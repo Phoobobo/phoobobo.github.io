@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录 | phoobobo</title><meta name="author" content="phoobobo"><meta name="copyright" content="phoobobo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录 在飞书群发一条消息，十分钟后 GitHub 上出现了一个可以玩的游戏。中间没有人动一行代码。  这篇文章记录了我如何把 OpenClaw ACP 和 Feishu 打通，让 AI Agent 在群聊里收到需求后，自动调起 Copilot CLI 去写代码、建仓库、推 GitHub——以及这条路上踩过的每一个坑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录">
+<meta property="og:url" content="https://phoobobo.github.io/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/index.html">
+<meta property="og:site_name" content="phoobobo">
+<meta property="og:description" content="在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录 在飞书群发一条消息，十分钟后 GitHub 上出现了一个可以玩的游戏。中间没有人动一行代码。  这篇文章记录了我如何把 OpenClaw ACP 和 Feishu 打通，让 AI Agent 在群聊里收到需求后，自动调起 Copilot CLI 去写代码、建仓库、推 GitHub——以及这条路上踩过的每一个坑。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://phoobobo.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-04-06T14:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-06T16:41:00.147Z">
+<meta property="article:author" content="phoobobo">
+<meta property="article:tag" content="ACP">
+<meta property="article:tag" content="Copilot CLI">
+<meta property="article:tag" content="Feishu">
+<meta property="article:tag" content="OpenClaw">
+<meta property="article:tag" content="多智能体">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://phoobobo.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录",
+  "url": "https://phoobobo.github.io/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/",
+  "image": "https://phoobobo.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-04-06T14:00:00.000Z",
+  "dateModified": "2026-04-06T16:41:00.147Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "phoobobo",
+      "url": "https://phoobobo.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://phoobobo.github.io/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.5-b1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"><link rel="stylesheet" href="/css/prism.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">phoobobo</span></a><a class="nav-page-title" href="/"><span class="site-name">在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-04-06T14:00:00.000Z" title="Created 2026-04-06 22:00:00">2026-04-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-04-06T16:41:00.147Z" title="Updated 2026-04-07 00:41:00">2026-04-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="在飞书群里让-AI-自动写代码：OpenClaw-ACP-Feishu-踩坑实录"><a href="#在飞书群里让-AI-自动写代码：OpenClaw-ACP-Feishu-踩坑实录" class="headerlink" title="在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录"></a>在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录</h1><blockquote>
+<p>在飞书群发一条消息，十分钟后 GitHub 上出现了一个可以玩的游戏。中间没有人动一行代码。</p>
+</blockquote>
+<p>这篇文章记录了我如何把 OpenClaw ACP 和 Feishu 打通，让 AI Agent 在群聊里收到需求后，自动调起 Copilot CLI 去写代码、建仓库、推 GitHub——以及这条路上踩过的每一个坑。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、目标：群里喊一声，代码自己写好"><a href="#一、目标：群里喊一声，代码自己写好" class="headerlink" title="一、目标：群里喊一声，代码自己写好"></a>一、目标：群里喊一声，代码自己写好</h2><p>最终实现效果：</p>
+<ol>
+<li>我在飞书编程群发消息：<code>做一个贪吃蛇游戏</code></li>
+<li>Phoenix（群里的 AI 技术负责人）收到消息，分析需求</li>
+<li>Phoenix 调用 <code>sessions_spawn</code> 把任务委托给 Copilot CLI</li>
+<li>Copilot CLI 在本地工作区写好代码，初始化 git，推到 GitHub</li>
+<li>Phoenix 把仓库 URL 发回群里</li>
+</ol>
+<p>整个过程无需人工干预，Phoenix 是协调者，Copilot CLI 是执行者。</p>
+<hr>
+<h2 id="二、环境说明"><a href="#二、环境说明" class="headerlink" title="二、环境说明"></a>二、环境说明</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OpenClaw</strong></td>
+<td>AI Agent 网关，管理 agent 会话、路由消息、调用 LLM</td>
+</tr>
+<tr>
+<td><strong>acpx 插件</strong></td>
+<td>OpenClaw 插件，本地运行 Copilot CLI，桥接 ACP 协议</td>
+</tr>
+<tr>
+<td><strong>Feishu channel</strong></td>
+<td>OpenClaw 的消息通道，通过 WebSocket 长连接接收飞书消息</td>
+</tr>
+<tr>
+<td><strong>Phoenix (coding agent)</strong></td>
+<td>LLM mode 的 agent，绑定在编程群，负责分析需求并委托 Copilot CLI</td>
+</tr>
+<tr>
+<td><strong>Copilot CLI</strong></td>
+<td>实际写代码的执行者，由 acpx 在本地进程中运行</td>
+</tr>
+</tbody></table>
+<p>关键 <code>openclaw.json</code> 配置骨架：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;acp&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;backend&quot;</span><span class="punctuation">:</span> <span class="string">&quot;acpx&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;plugins&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;entries&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;acpx&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;permissionMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;approve-all&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agents&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;list&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;coding&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;copilot&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;profile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;full&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;bindings&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;agentId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;coding&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;match&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;channel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;feishu&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;peer&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;group&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;oc_你的群ID&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>coding</code> agent <strong>没有</strong> <code>runtime</code> 字段，这意味着它运行在 LLM mode——Phoenix 用 LLM 接收消息、做决策，再通过 <code>sessions_spawn</code> 工具把任务派发给 Copilot CLI。</p>
+<hr>
+<h2 id="三、基础配置：把群聊消息路由到-agent"><a href="#三、基础配置：把群聊消息路由到-agent" class="headerlink" title="三、基础配置：把群聊消息路由到 agent"></a>三、基础配置：把群聊消息路由到 agent</h2><h3 id="1-获取飞书群-ID"><a href="#1-获取飞书群-ID" class="headerlink" title="1. 获取飞书群 ID"></a>1. 获取飞书群 ID</h3><p>群 ID 格式为 <code>oc_xxx</code>。在网关运行后 @mention 机器人，然后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw logs --follow | grep chat_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-配置-binding"><a href="#2-配置-binding" class="headerlink" title="2. 配置 binding"></a>2. 配置 binding</h3><p>在 <code>openclaw.json</code> 的 <code>bindings</code> 数组里加入上面的配置，<code>peer.id</code> 填入群 ID。</p>
+<blockquote>
+<p>注意：<code>bindings</code> 和 <code>agents.list</code> 是热重载的，修改后无需重启网关。但 <code>plugins.entries</code> 和顶层 <code>acp</code> 字段需要完整重启：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw daemon restart</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="3-配置-SOUL-md（关键！）"><a href="#3-配置-SOUL-md（关键！）" class="headerlink" title="3. 配置 SOUL.md（关键！）"></a>3. 配置 SOUL.md（关键！）</h3><p>Phoenix 的行为完全由 <code>SOUL.md</code> 定义。要让 Phoenix 在群里收到编程任务时调用 Copilot CLI，需要在 SOUL.md 里明确写死规则：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Hybrid ACP Workflow</span></span><br><span class="line"></span><br><span class="line">你可以通过 sessions<span class="emphasis">_spawn 把编程任务委托给 Copilot CLI：</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">1. <span class="strong">**Plan first**</span> — 分析需求，确定技术方案</span></span><br><span class="line"><span class="emphasis">2. <span class="strong">**Spawn ACP**</span> — 使用 `sessions_</span>spawn(&#123; runtime: &quot;acpx&quot;, agentId: &quot;copilot&quot;, cwd: &quot;~/workspace-phoenix&quot; &#125;)` 启动 Copilot 会话</span><br><span class="line"><span class="bullet">3.</span> <span class="strong">**Monitor**</span> — 通过 session 工具跟踪进度</span><br><span class="line"><span class="bullet">4.</span> <span class="strong">**Report**</span> — 把结果和仓库 URL 发回飞书群</span><br><span class="line"></span><br><span class="line"><span class="strong">**Rule: 在飞书群里，任何写代码的任务都必须通过 Copilot CLI 完成，禁止直接在聊天里输出代码。**</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、坑一：-acp-斜杠命令在普通群里静默失败"><a href="#四、坑一：-acp-斜杠命令在普通群里静默失败" class="headerlink" title="四、坑一：/acp 斜杠命令在普通群里静默失败"></a>四、坑一：<code>/acp</code> 斜杠命令在普通群里静默失败</h2><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>在飞书群里发送 <code>/acp 做一个贪吃蛇游戏</code>，机器人没有任何响应。</p>
+<p>查看网关日志：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch complete (queuedFinal=false, replies=0)</span><br></pre></td></tr></table></figure>
+
+<p>整条消息在 200ms 内被处理完，<code>replies=0</code>，说明网关<strong>连 LLM 都没有调用</strong>，直接丢弃了这条消息。</p>
+<h3 id="诊断"><a href="#诊断" class="headerlink" title="诊断"></a>诊断</h3><p>日志时序是关键诊断信号：</p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>replies=0</code>，耗时 &lt; 200ms</td>
+<td>斜杠命令被网关拦截，未传递给 LLM</td>
+</tr>
+<tr>
+<td><code>replies=1</code>，耗时 15–90s</td>
+<td>LLM 正常处理</td>
+</tr>
+<tr>
+<td><code>replies=1</code>，耗时 2–5min</td>
+<td>LLM 做了繁重工作（如 ACP spawn + 等待）</td>
+</tr>
+</tbody></table>
+<h3 id="根因"><a href="#根因" class="headerlink" title="根因"></a>根因</h3><p>官方文档明确说明（<code>docs.openclaw.ai/channels/feishu#acp-sessions</code>）：</p>
+<blockquote>
+<p><strong>v1 does not target generic non-topic group chats.</strong></p>
+</blockquote>
+<p><code>/acp</code> 系列斜杠命令在 v1 版本中只支持：</p>
+<ul>
+<li>私聊（DM）</li>
+<li>飞书话题帖（topic thread）</li>
+</ul>
+<p>普通群聊里的 <code>/acp</code> 消息会被网关直接吞掉，永远不会到达 LLM。</p>
+<h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><p><strong>放弃 <code>/acp</code> 斜杠命令</strong>，改用普通消息触发 LLM，由 LLM 自己决定调用 <code>sessions_spawn</code>。</p>
+<hr>
+<h2 id="五、坑二：runtime-acp-thread-true-报错"><a href="#五、坑二：runtime-acp-thread-true-报错" class="headerlink" title="五、坑二：runtime: &quot;acp&quot; + thread: true 报错"></a>五、坑二：<code>runtime: &quot;acp&quot;</code> + <code>thread: true</code> 报错</h2><h3 id="现象-1"><a href="#现象-1" class="headerlink" title="现象"></a>现象</h3><p>改用普通消息后，Phoenix（LLM）能正常收到消息了。在 SOUL.md 里加上 ACP 委托规则后，Phoenix 确实尝试调用了 <code>sessions_spawn</code>，但返回了报错：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;error&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Could not resolve a feishu conversation for ACP thread spawn.&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="根因-1"><a href="#根因-1" class="headerlink" title="根因"></a>根因</h3><p>Phoenix 调用 <code>sessions_spawn</code> 时，默认使用了 <code>runtime: &quot;acp&quot;</code> 加 <code>thread: true</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;task&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;runtime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;acp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agentId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;copilot&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;thread&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>runtime: &quot;acp&quot;</code> + <code>thread: true</code> 的组合会让网关尝试在当前飞书会话里<strong>创建一个话题帖（topic thread）</strong>，然后把 ACP 会话绑定到这个帖子。问题是：</p>
+<ul>
+<li>飞书 ACP 的 thread 模式需要 topic 类型的会话</li>
+<li>普通群聊不支持通过这个路径创建话题</li>
+<li>结果：<code>&quot;Could not resolve a feishu conversation&quot;</code></li>
+</ul>
+<h3 id="解法-1"><a href="#解法-1" class="headerlink" title="解法"></a>解法</h3><p>使用 <code>runtime: &quot;acpx&quot;</code> 替代 <code>runtime: &quot;acp&quot;</code>，并且<strong>不传 <code>thread: true</code></strong>。</p>
+<p><code>acpx</code> 是本地进程模式：Copilot CLI 在本地运行，结果通过工具调用返回给 Phoenix，完全不需要飞书的话题帖功能。</p>
+<p>在 SOUL.md 里明确写死：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用 <span class="code">`sessions_spawn(&#123; runtime: &quot;acpx&quot;, agentId: &quot;copilot&quot;, cwd: &quot;~/workspace-phoenix&quot; &#125;)`</span> 启动 Copilot 会话。</span><br><span class="line"><span class="strong">**禁止使用 `runtime: &quot;acp&quot;` 或 `thread: true`——普通飞书群不支持话题帖式的 ACP 线程绑定。**</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、正确配置总结"><a href="#六、正确配置总结" class="headerlink" title="六、正确配置总结"></a>六、正确配置总结</h2><p>最终跑通的完整配置：</p>
+<h3 id="openclaw-json（关键部分）"><a href="#openclaw-json（关键部分）" class="headerlink" title="openclaw.json（关键部分）"></a><code>openclaw.json</code>（关键部分）</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;acp&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;backend&quot;</span><span class="punctuation">:</span> <span class="string">&quot;acpx&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;plugins&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;entries&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;acpx&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;permissionMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;approve-all&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agents&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;list&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;coding&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;copilot&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;profile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;full&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;bindings&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;agentId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;coding&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;match&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;channel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;feishu&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;peer&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;group&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;oc_你的群ID&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SOUL-md-中-ACP-规则的关键行"><a href="#SOUL-md-中-ACP-规则的关键行" class="headerlink" title="SOUL.md 中 ACP 规则的关键行"></a>SOUL.md 中 ACP 规则的关键行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sessions_spawn(&#123; runtime: &quot;acpx&quot;, agentId: &quot;copilot&quot;, cwd: &quot;~/workspace-phoenix&quot; &#125;)</span><br><span class="line"># 不能用 runtime: &quot;acp&quot;，不能用 thread: true</span><br></pre></td></tr></table></figure>
+
+<h3 id="两条必须遵守的规则"><a href="#两条必须遵守的规则" class="headerlink" title="两条必须遵守的规则"></a>两条必须遵守的规则</h3><ol>
+<li><strong>不要用 <code>/acp</code> 斜杠命令</strong>——v1 不支持普通群聊</li>
+<li><strong>sessions_spawn 用 <code>runtime: &quot;acpx&quot;</code></strong>——不要用 <code>runtime: &quot;acp&quot;</code> 或带 <code>thread: true</code></li>
+</ol>
+<hr>
+<h2 id="七、验证：如何确认是-Copilot-CLI-在写代码"><a href="#七、验证：如何确认是-Copilot-CLI-在写代码" class="headerlink" title="七、验证：如何确认是 Copilot CLI 在写代码"></a>七、验证：如何确认是 Copilot CLI 在写代码</h2><p>跑通之后，我想确认活儿确实是 Copilot CLI 干的，而不是 Phoenix 偷偷直接把代码输出到群里了。以下是完整的证据链：</p>
+<p><strong>① <code>sessions_spawn</code> 调用记录</strong></p>
+<p>在 Phoenix 的 session 文件（<code>~/.openclaw/agents/coding/sessions/&lt;uuid&gt;.jsonl</code>）里，可以找到 <code>toolCall</code> 类型的记录：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;toolCall&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sessions_spawn&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;runtime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;acpx&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;agentId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;copilot&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;task&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Create a browser-based Tic-Tac-Toe project...&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>工具返回值：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;accepted&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;childSessionKey&quot;</span><span class="punctuation">:</span> <span class="string">&quot;agent:copilot:acp:52b8f9ad-...&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;runId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;47c8404e-...&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;run&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>② acpx 后端日志</strong></p>
+<p><code>gateway.err.log</code> 里可以看到 acpx 在初始化 Copilot CLI 会话：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[plugins] acpx ensureSession repairing dead named session by resuming backend session:</span><br><span class="line">  session=agent:copilot:acp:52b8f9ad-...</span><br><span class="line">  cwd=/Users/phoobobo/workspace-phoenix</span><br></pre></td></tr></table></figure>
+
+<p><strong>③ <code>agent.wait</code> 响应</strong></p>
+<p><code>gateway.log</code> 里可以看到 OpenClaw 等待 Copilot CLI 完成的 WebSocket 调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">⇄ res ✓ agent.wait 112062ms</span><br></pre></td></tr></table></figure>
+
+<p>等了整整 <strong>112 秒</strong>——这是 Copilot CLI 真正在写代码和推 git 的时间。</p>
+<p><strong>④ 独立的 Copilot CLI session 文件</strong></p>
+<p><code>~/.openclaw/agents/copilot/sessions/</code> 下出现了新的 session 文件，内容是 Copilot CLI 收到任务、逐个创建文件、初始化 git 仓库的完整过程。</p>
+<p><strong>⑤ 文件时间戳与 git commit</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -la ~/workspace-phoenix/tic-tac-toe/</span><br><span class="line"><span class="comment"># 所有文件时间戳：4月 6 23:47（正好在 session 窗口内）</span></span><br><span class="line"></span><br><span class="line">$ git -C ~/workspace-phoenix/tic-tac-toe <span class="built_in">log</span> --oneline</span><br><span class="line">7ccd90e (HEAD -&gt; main, tag: v0.1.0, origin/main) Initial commit: add tic-tac-toe game</span><br><span class="line"><span class="comment"># commit 时间：2026-04-06 23:47:57 +0800</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>⑥ GitHub 仓库</strong></p>
+<p><code>https://github.com/Phoobobo/tic-tac-toe</code> — 公开仓库，包含 <code>index.html</code>、<code>style.css</code>、<code>app.js</code>，打开即可玩。</p>
+<hr>
+<h2 id="八、小结"><a href="#八、小结" class="headerlink" title="八、小结"></a>八、小结</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/acp</code> 命令无响应</td>
+<td>v1 不支持普通群聊斜杠命令</td>
+<td>改用普通消息，让 LLM 决策</td>
+</tr>
+<tr>
+<td><code>sessions_spawn</code> 报 “Could not resolve”</td>
+<td><code>runtime: &quot;acp&quot;</code> 需要飞书话题帖</td>
+<td>改用 <code>runtime: &quot;acpx&quot;</code></td>
+</tr>
+<tr>
+<td>Phoenix 直接输出代码而不委托</td>
+<td>SOUL.md 里没有明确禁止规则</td>
+<td>在 SOUL.md 里写死强制规则</td>
+</tr>
+</tbody></table>
+<p>核心教训：<strong>把规则写进 SOUL.md 时要足够具体</strong>。”可以用 sessions_spawn” 不够，要写成 “必须用 sessions_spawn，用 acpx，禁止用 acp，禁止 thread: true，禁止直接输出代码”。LLM 的默认行为总是走最省力的路——不堵死，它就会抄近道。</p>
+<hr>
+<p><em>相关文章：<a href="/2026/04/05/openclaw-multi-agent-rebuild/">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</a></em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://phoobobo.github.io">phoobobo</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://phoobobo.github.io/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/">https://phoobobo.github.io/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OpenClaw/">OpenClaw</a><a class="post-meta__tags" href="/tags/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93/">多智能体</a><a class="post-meta__tags" href="/tags/ACP/">ACP</a><a class="post-meta__tags" href="/tags/Feishu/">Feishu</a><a class="post-meta__tags" href="/tags/Copilot-CLI/">Copilot CLI</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/11/2026-04-11-moshi-copilot-tailscale-pitfalls/" title="别装错tailscale！Moshi远控Copilot终端的血泪踩坑记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">别装错tailscale！Moshi远控Copilot终端的血泪踩坑记</div></div><div class="info-2"><div class="info-item-1"> 面向Agentic coding重度用户，随时随地vibe coding的你。  最近想用手机随时远程操控Copilot终端，选了Moshi + Tailscale这套方案，结果一顿操作猛如虎，差点被坑到怀疑人生。这里总结下关键坑点，帮你避雷。 1. tailscale一定要装社区版！别问，问就是brew install --formula tailscale。装错App Store版，Moshi根本连不上，白忙活一小时。 2. tailscale服务一定要先启动sudo brew services start tailscale，不启动服务，ssh连不上，Moshi只会报错。 3. 先启动tailscale，再用ssh连接顺序不能错！先sudo tailscale up，再在Moshi里用ssh连，不然会莫名其妙连不上。 4. Moshi配置没问题，关键在tailscaleMoshi配置很简单，坑全在tailscale。只要tailscale社区版+服务启动+顺序对，Moshi就能愉快vibe coding。 5. 让手机也能科学上网：Tailscale Exit Node如...</div></div></div></a><a class="pagination-related" href="/2026/04/05/2026-04-05-openclaw-multi-agent-rebuild/" title="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</div></div><div class="info-2"><div class="info-item-1">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录 五个 AI Agent，各司其职，全天候自动运转——这是我用一个下午完成的事情。   一、背景：为什么要搞多智能体？我一直在用 OpenClaw 跑 AI Agent。最初只是把几个 Agent 挂在飞书群里聊天用，但用着用着发现一个问题：它们太”被动”了。 Agent 只会回复消息，不会主动做事。没有工作流，没有定时任务，没有收入产出。它们更像是几个等待投喂的聊天机器人，而不是真正的”团队成员”。 于是我决定做一次彻底重建——不是调调参数，而是从身份定义、模型策略、自动化调度、到收入管线，全部推倒重来。    二、团队阵容重建后的五人阵容：    Agent 代号 角色 语言    Judy 💖 main 总调度 &#x2F; 管家 中英双语   Phoenix 🦅 coding 全栈开发 &#x2F; 开源 English   Mike ⚙️ devops 运维 &#x2F; 基础设施 English   Shirly ✍️ momo 内容创作 &#x2F; 自媒体 中文   xueqin 📜 lit...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/05/2026-04-05-openclaw-multi-agent-rebuild/" title="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-05</div><div class="info-item-2">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</div></div><div class="info-2"><div class="info-item-1">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录 五个 AI Agent，各司其职，全天候自动运转——这是我用一个下午完成的事情。   一、背景：为什么要搞多智能体？我一直在用 OpenClaw 跑 AI Agent。最初只是把几个 Agent 挂在飞书群里聊天用，但用着用着发现一个问题：它们太”被动”了。 Agent 只会回复消息，不会主动做事。没有工作流，没有定时任务，没有收入产出。它们更像是几个等待投喂的聊天机器人，而不是真正的”团队成员”。 于是我决定做一次彻底重建——不是调调参数，而是从身份定义、模型策略、自动化调度、到收入管线，全部推倒重来。    二、团队阵容重建后的五人阵容：    Agent 代号 角色 语言    Judy 💖 main 总调度 &#x2F; 管家 中英双语   Phoenix 🦅 coding 全栈开发 &#x2F; 开源 English   Mike ⚙️ devops 运维 &#x2F; 基础设施 English   Shirly ✍️ momo 内容创作 &#x2F; 自媒体 中文   xueqin 📜 lit...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E9%A3%9E%E4%B9%A6%E7%BE%A4%E9%87%8C%E8%AE%A9-AI-%E8%87%AA%E5%8A%A8%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%9AOpenClaw-ACP-Feishu-%E8%B8%A9%E5%9D%91%E5%AE%9E%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%9B%AE%E6%A0%87%EF%BC%9A%E7%BE%A4%E9%87%8C%E5%96%8A%E4%B8%80%E5%A3%B0%EF%BC%8C%E4%BB%A3%E7%A0%81%E8%87%AA%E5%B7%B1%E5%86%99%E5%A5%BD"><span class="toc-number">1.1.</span> <span class="toc-text">一、目标：群里喊一声，代码自己写好</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E"><span class="toc-number">1.2.</span> <span class="toc-text">二、环境说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%EF%BC%9A%E6%8A%8A%E7%BE%A4%E8%81%8A%E6%B6%88%E6%81%AF%E8%B7%AF%E7%94%B1%E5%88%B0-agent"><span class="toc-number">1.3.</span> <span class="toc-text">三、基础配置：把群聊消息路由到 agent</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%8E%B7%E5%8F%96%E9%A3%9E%E4%B9%A6%E7%BE%A4-ID"><span class="toc-number">1.3.1.</span> <span class="toc-text">1. 获取飞书群 ID</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AE-binding"><span class="toc-number">1.3.2.</span> <span class="toc-text">2. 配置 binding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE-SOUL-md%EF%BC%88%E5%85%B3%E9%94%AE%EF%BC%81%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">3. 配置 SOUL.md（关键！）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%9D%91%E4%B8%80%EF%BC%9A-acp-%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%E5%9C%A8%E6%99%AE%E9%80%9A%E7%BE%A4%E9%87%8C%E9%9D%99%E9%BB%98%E5%A4%B1%E8%B4%A5"><span class="toc-number">1.4.</span> <span class="toc-text">四、坑一：&#x2F;acp 斜杠命令在普通群里静默失败</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E8%B1%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%8A%E6%96%AD"><span class="toc-number">1.4.2.</span> <span class="toc-text">诊断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E5%9B%A0"><span class="toc-number">1.4.3.</span> <span class="toc-text">根因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B3%95"><span class="toc-number">1.4.4.</span> <span class="toc-text">解法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%9D%91%E4%BA%8C%EF%BC%9Aruntime-acp-thread-true-%E6%8A%A5%E9%94%99"><span class="toc-number">1.5.</span> <span class="toc-text">五、坑二：runtime: &quot;acp&quot; + thread: true 报错</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E8%B1%A1-1"><span class="toc-number">1.5.1.</span> <span class="toc-text">现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E5%9B%A0-1"><span class="toc-number">1.5.2.</span> <span class="toc-text">根因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B3%95-1"><span class="toc-number">1.5.3.</span> <span class="toc-text">解法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">六、正确配置总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#openclaw-json%EF%BC%88%E5%85%B3%E9%94%AE%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">1.6.1.</span> <span class="toc-text">openclaw.json（关键部分）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SOUL-md-%E4%B8%AD-ACP-%E8%A7%84%E5%88%99%E7%9A%84%E5%85%B3%E9%94%AE%E8%A1%8C"><span class="toc-number">1.6.2.</span> <span class="toc-text">SOUL.md 中 ACP 规则的关键行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E6%9D%A1%E5%BF%85%E9%A1%BB%E9%81%B5%E5%AE%88%E7%9A%84%E8%A7%84%E5%88%99"><span class="toc-number">1.6.3.</span> <span class="toc-text">两条必须遵守的规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E9%AA%8C%E8%AF%81%EF%BC%9A%E5%A6%82%E4%BD%95%E7%A1%AE%E8%AE%A4%E6%98%AF-Copilot-CLI-%E5%9C%A8%E5%86%99%E4%BB%A3%E7%A0%81"><span class="toc-number">1.7.</span> <span class="toc-text">七、验证：如何确认是 Copilot CLI 在写代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%B0%8F%E7%BB%93"><span class="toc-number">1.8.</span> <span class="toc-text">八、小结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/12/2026-04-12-hermes-pitfalls/" title="Hermes 踩坑经验：从 openclaw 迁移的血泪史">Hermes 踩坑经验：从 openclaw 迁移的血泪史</a><time datetime="2026-04-12T11:56:00.000Z" title="Created 2026-04-12 19:56:00">2026-04-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/11/2026-04-11-moshi-copilot-tailscale-pitfalls/" title="别装错tailscale！Moshi远控Copilot终端的血泪踩坑记">别装错tailscale！Moshi远控Copilot终端的血泪踩坑记</a><time datetime="2026-04-11T06:55:00.000Z" title="Created 2026-04-11 14:55:00">2026-04-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/2026-04-06-openclaw-acp-feishu-group-coding/" title="在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录">在飞书群里让 AI 自动写代码：OpenClaw ACP + Feishu 踩坑实录</a><time datetime="2026-04-06T14:00:00.000Z" title="Created 2026-04-06 22:00:00">2026-04-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/05/2026-04-05-openclaw-multi-agent-rebuild/" title="我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录">我给自己造了一支 AI 团队：OpenClaw 多智能体系统重建实录</a><time datetime="2026-04-05T07:00:00.000Z" title="Created 2026-04-05 15:00:00">2026-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/22/2025-03-22-wireguard-vpn-%E8%B8%A9%E5%9D%91%E6%8C%87%E5%8D%97/" title="WireGuard VPN 配置完全踩坑指南">WireGuard VPN 配置完全踩坑指南</a><time datetime="2025-03-22T02:54:00.000Z" title="Created 2025-03-22 10:54:00">2025-03-22</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By phoobobo</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5-b1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.5-b1"></script><script src="/js/main.js?v=5.5.5-b1"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
