@@ -22,6 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Debug node_modules
+        run: |
+          ls node_modules/ | head -20
+          ls node_modules/hexo/ 2>/dev/null || echo "hexo not found"
+
       - name: Generate static files
         run: |
           cp _hexo_config.yml _config.yml
