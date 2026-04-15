@@ -22,3 +22,6 @@ db.json
 
 # OS
 .DS_Store
+
+# Generated config (copy from _hexo_config.yml)
+_config.yml
