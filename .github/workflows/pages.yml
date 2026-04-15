@@ -20,7 +20,9 @@ jobs:
           node-version: '20'
 
       - name: Install hexo-cli globally
-        run: npm install -g hexo-cli@3
+        run: |
+          npm install -g hexo-cli@3
+          npm install -g hexo@8
 
       - name: Install dependencies
         run: npm install
