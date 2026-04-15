@@ -26,6 +26,7 @@ jobs:
 
       - name: Generate static files
         run: |
+          cp _hexo_config.yml _config.yml
           npx hexo clean
           npx hexo generate
 
