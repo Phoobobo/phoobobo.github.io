@@ -19,17 +19,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install hexo
-        run: npm install -g hexo-cli
-
       - name: Install dependencies
         run: npm install
 
       - name: Generate static files
         run: |
           cp _hexo_config.yml _config.yml
-          npm exec -- hexo clean
-          npm exec -- hexo generate
+          node node_modules/hexo/bin/hexo.js clean
+          node node_modules/hexo/bin/hexo.js generate
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
