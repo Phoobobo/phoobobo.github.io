@@ -25,7 +25,7 @@ tags:
 
 ## 3. 先启动 tailscale，再用 ssh 连接
 
-顺序不能错！先 `sudo tailscale up`，再在 Moshi 里用 ssh 连，不然会莫名其妙连不上。
+顺序不能错！先 `sudo tailscale up --ssh`，再在 Moshi 里用 ssh 连，不然会莫名其妙连不上。
 
 ## 4. Moshi 配置没问题，关键在 tailscale
 
