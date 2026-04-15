@@ -1,6 +1,7 @@
 ---
 title: Hermes 踩坑经验：从 openclaw 迁移的血泪史
 date: 2026-04-12 19:56:00
+updated: 2026-04-12 19:56:00
 categories:
   - AI工具
 tags:

@@ -1,6 +1,7 @@
 ---
 title: 别装错tailscale！Moshi远控Copilot终端的血泪踩坑记
 date: 2026-04-11 14:55:00
+updated: 2026-04-11 14:55:00
 categories:
   - AI工具
 tags:

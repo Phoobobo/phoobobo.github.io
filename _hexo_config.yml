@@ -9,7 +9,7 @@ timezone: ''
 
 # URL
 url: https://phoobobo.github.io
-permalink: :year/:month/:day/:abbrlink.html
+permalink: :year/:month/:day/:title.html
 permalink_defaults:
 pretty_urls:
   trailing_index: true
@@ -67,20 +67,3 @@ pagination_dir: page
 
 # Extensions
 theme: butterfly
-
-# Plugins
-abbrlink:
-  alg: crc32
-  rep: hex
-
-feed:
-  enable: true
-  type: atom
-  path: atom.xml
-
-nofollow:
-  enable: true
-  field: site
-
-sitemap:
-  enable: true
