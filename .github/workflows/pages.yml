@@ -22,15 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug node_modules
-        run: |
-          ls node_modules/hexo/bin/
-
       - name: Generate static files
         run: |
           cp _hexo_config.yml _config.yml
-          npx hexo clean
-          npx hexo generate
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
