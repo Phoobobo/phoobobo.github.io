@@ -24,8 +24,7 @@ jobs:
 
       - name: Debug node_modules
         run: |
-          ls node_modules/ | head -20
-          ls node_modules/hexo/ 2>/dev/null || echo "hexo not found"
+          ls node_modules/hexo/bin/
 
       - name: Generate static files
         run: |
