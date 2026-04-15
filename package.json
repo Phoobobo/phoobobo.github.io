@@ -1,0 +1,20 @@
+{
+  "name": "phoobobo-blog",
+  "version": "1.0.0",
+  "description": "phoobobo's blog",
+  "private": true,
+  "scripts": {
+    "build": "hexo clean && hexo generate",
+    "deploy": "hexo deploy"
+  },
+  "dependencies": {
+    "hexo": "^8.1.1",
+    "hexo-renderer-pug": "^3.0.0",
+    "hexo-renderer-stylus": "^3.0.0",
+    "hexo-theme-butterfly": "^5.5.5",
+    "hexo-abbrlink": "^2.2.1",
+    "hexo-filter-nofollow": "^1.0.3",
+    "hexo-generator-feed": "^3.0.0",
+    "hexo-generator-sitemap": "^3.0.1"
+  }
+}
