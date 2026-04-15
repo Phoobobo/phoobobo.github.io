@@ -7,6 +7,7 @@
     "build": "hexo clean && hexo generate"
   },
   "dependencies": {
+    "hexo-cli": "^4.0.0",
     "hexo": "^8.1.1",
     "hexo-renderer-pug": "^3.0.0",
     "hexo-renderer-stylus": "^3.0.0",
