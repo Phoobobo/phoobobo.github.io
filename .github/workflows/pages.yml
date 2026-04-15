@@ -29,8 +29,8 @@ jobs:
       - name: Generate static files
         run: |
           cp _hexo_config.yml _config.yml
-          node ./node_modules/hexo/bin/hexo clean
-          node ./node_modules/hexo/bin/hexo generate
+          node ./node_modules/hexo-cli/bin/hexo clean
+          node ./node_modules/hexo-cli/bin/hexo generate
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
