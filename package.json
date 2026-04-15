@@ -13,7 +13,7 @@
     "hexo-renderer-stylus": "^3.0.0",
     "hexo-theme-butterfly": "^5.5.5",
     "hexo-abbrlink": "^2.2.1",
-    "hexo-filter-nofollow": "^1.0.3",
+    "hexo-filter-nofollow": "^2.0.0",
     "hexo-generator-feed": "^3.0.0",
     "hexo-generator-sitemap": "^3.0.1"
   }
