@@ -40,6 +40,7 @@ jobs:
         run: |
           npx hexo clean
           npx hexo generate
+          touch public/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
