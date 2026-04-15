@@ -7,11 +7,11 @@
     "build": "hexo clean && hexo generate"
   },
   "dependencies": {
-    "hexo": "^6.3.0",
-    "hexo-cli": "^4.1.0",
-    "hexo-renderer-pug": "^3.0.0",
-    "hexo-renderer-stylus": "^2.1.0",
-    "hexo-generator-feed": "^3.0.0",
-    "hexo-generator-sitemap": "^3.0.1"
+    "hexo": "^5.4.0",
+    "hexo-cli": "^3.1.0",
+    "hexo-renderer-pug": "^2.1.0",
+    "hexo-renderer-stylus": "^1.0.1",
+    "hexo-generator-feed": "^1.2.0",
+    "hexo-generator-sitemap": "^2.2.0"
   }
 }
