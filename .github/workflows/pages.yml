@@ -23,6 +23,7 @@ jobs:
         run: |
           npm install -g hexo-cli@3
           npm install -g hexo@8
+          hexo version
 
       - name: Install dependencies
         run: npm install
