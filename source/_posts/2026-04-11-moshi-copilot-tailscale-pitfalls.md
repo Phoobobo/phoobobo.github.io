@@ -72,7 +72,7 @@ sudo tailscale up --advertise-exit-node --ssh
 
 ## 6. 为什么最终选择了 Moshi？
 
-对比了 blink 和 terminus：blink 界面太复杂，terminus UI 太老气。Moshi 界面简洁颜值高，再加上 mosh 永不断联和 tmux sessions 自动发现，决定付费。
+免费的 mosh 连接次数用完之后，对比了 blink 和 terminus：blink 界面太复杂，terminus UI 太老气。Moshi 界面简洁颜值高，再加上 mosh 永不断联和 tmux sessions 自动发现，决定付费。
 
 ## 配图
 
