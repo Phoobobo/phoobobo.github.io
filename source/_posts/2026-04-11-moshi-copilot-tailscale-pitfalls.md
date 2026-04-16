@@ -1,5 +1,5 @@
 ---
-title: 别装错tailscale！Moshi远控Copilot终端的血泪踩坑记
+title: 手机远程Coding Agent：Tailscale + Moshi + Typeless 打造随身开发环境
 date: 2026-04-11 14:55:00
 updated: 2026-04-16 02:30:00
 categories:
@@ -7,14 +7,21 @@ categories:
 tags:
   - 踩坑
   - moshi
-  - copilot
   - tailscale
   - 远程开发
+  - Claude
+  - Copilot
+  - Cursor
+  - Coding Agent
 ---
 
-面向 Agentic coding 重度用户，随时随地 vibe coding 的你。
+面向 Coding Agent 重度用户，随时随地 vibe coding 的你。
 
-最近想用手机随时远程操控 Copilot 终端，选了 Moshi + Tailscale 这套方案，结果一顿操作猛如虎，差点被坑到怀疑人生。这里总结下关键坑点，帮你避雷。
+现在的 Coding Agent 越来越多：Claude、Copilot、OpenCode、Codex、Trae……它们大多活在终端里，SSH 远程连接变得前所未有的重要。
+
+而如果能在手机上搭配 **Typeless 输入法**，效率直接飙升——手机打字也能像电脑一样流畅，掏出来就能继续 vibe coding。
+
+这套方案的核心组合：**Tailscale + Moshi + Typeless**。
 
 <!--more-->
 
@@ -81,9 +88,20 @@ Blink 和 Terminus 虽然也有 mosh，但要么界面太复杂，要么 UI 太�
 订阅之后，mosh 连接 + tmux sessions 自动发现，体验直接起飞：
 - **永不断联**：地铁、电梯、信号差的角落，统统不掉线
 - **tmux 自动恢复**：切回来时 session 还在，terminal 状态完美保留
-- **Copilot 随时在线**：随时掏手机 vibe coding
+- **Coding Agent 随时在线**：随时掏手机 vibe coding
 
-付费 Moshi + Tailscale，是目前移动 Copilot coding 的最优解。
+付费 Moshi + Tailscale，是目前移动 Coding Agent 的最优解。
+
+## 7. Typeless：手机输入法的新选择
+
+说到手机 SSH，不能不提输入法。普通手机输入法在终端里简直是噩梦——候选词弹窗、智能联想、滑动输入……全都在干扰输入。
+
+**Typeless** 是一款专为终端/代码场景设计的输入法：
+- **无候选框**：打字直接上屏，没有任何干扰
+- **无智能联想**：终端里不需要预测
+- **外接键盘友好**：配合蓝牙键盘，体验接近实体键盘
+
+手机 + Typeless + Moshi + Tailscale = 随身 Coding Agent 工作站。
 
 ## 配图
 
