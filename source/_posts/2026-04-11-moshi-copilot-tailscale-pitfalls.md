@@ -1,7 +1,7 @@
 ---
 title: 别装错tailscale！Moshi远控Copilot终端的血泪踩坑记
 date: 2026-04-11 14:55:00
-updated: 2026-04-11 14:55:00
+updated: 2026-04-16 02:30:00
 categories:
   - AI工具
 tags:
@@ -15,6 +15,29 @@ tags:
 面向 Agentic coding 重度用户，随时随地 vibe coding 的你。
 
 最近想用手机随时远程操控 Copilot 终端，选了 Moshi + Tailscale 这套方案，结果一顿操作猛如虎，差点被坑到怀疑人生。这里总结下关键坑点，帮你避雷。
+
+<!--more-->
+
+## 0. 为什么最终选择了 Moshi 付费订阅？
+
+免费试用期间只能用 ssh 连接，用着用着发现 ssh 断联是家常便饭——电梯里晃一下断了，等地铁时断了，信号不好时断了。每次都要重新连接、重新进入 tmux session，体验碎成渣。
+
+于是对比了其他终端 app：
+
+| App | 价格 | 界面 | Mosh | 我的选择 |
+|-----|------|------|------|---------|
+| **Moshi** | $8/月起 | 简洁现代 | ✅ | ✅ |
+| Blink | $10/月起 | 功能多但复杂 | ✅ | ❌ |
+| Terminus | $10/月起 | 老派土气 | ✅ | ❌ |
+
+Blink 和 Terminus 虽然也有 mosh，但要么界面太复杂，要么 UI 太丑。最关键的是：**Moshi 最便宜**。
+
+订阅之后，mosh 连接 + tmux sessions 自动发现，体验直接起飞：
+- **永不断联**：地铁、电梯、信号差的角落，统统不掉线
+- **tmux 自动恢复**：切回来时 session 还在，terminal 状态完美保留
+- **Copilot 随时在线**：随时掏手机 vibe coding
+
+付费 Moshi + Tailscale，是目前移动 Copilot coding 的最优解。
 
 ## 1. tailscale 一定要装社区版！
 
