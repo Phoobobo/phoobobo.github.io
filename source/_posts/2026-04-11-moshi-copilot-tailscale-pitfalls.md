@@ -18,7 +18,7 @@ tags:
 
 现在的 Coding Agent 越来越多：Claude、Copilot、OpenCode、Codex、Trae……它们大多活在终端里，SSH 远程连接变得前所未有的重要。
 
-而如果能在手机上搭配一款**无候选框输入法**，效率直接飙升——手机打字也能像电脑一样流畅，掏出来就能继续 vibe coding。
+而如果能搭配 typeless 之类的智能语音输入法，效率直接飙升——手机打字也能像电脑一样流畅，掏出来就能继续 vibe coding。
 
 这套方案的核心组合：**Tailscale + Moshi**。
 
