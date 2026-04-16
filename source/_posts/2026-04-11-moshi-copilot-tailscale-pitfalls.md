@@ -87,7 +87,7 @@ sudo tailscale up --advertise-exit-node --ssh
 **Q: 为什么不选 OpenClaw + ACP 组合进行远程控制 Coding Harness？**
 
 A: OpenClaw + ACP 的方案有两个问题：
-1. 需要关联飞书 channel 会话和 ACP 会话，容易混淆
+1. 需要关联 channel 会话和 ACP 会话，容易混淆
 2. 无法面对"电脑终端开多个 coding harness 干活，又想在手机上继续"的场景
 
 相比之下，Tailscale + Moshi 直接接管终端 session，不存在会话映射的问题，电脑上开几个 tmux session，手机上都能看到、切换、继续。
