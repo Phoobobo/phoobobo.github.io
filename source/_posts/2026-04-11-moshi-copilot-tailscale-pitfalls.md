@@ -72,12 +72,7 @@ sudo tailscale up --advertise-exit-node --ssh
 
 ## 6. 为什么最终选择了 Moshi？
 
-免费试用期间只能用 ssh 连接，用着用着发现 ssh 断联是家常便饭——电梯里晃一下断了，等地铁时断了，信号不好时断了。每次都要重新连接、重新进入 tmux session，体验碎成渣。
-
-订阅之后，mosh 连接 + tmux sessions 自动发现，体验直接起飞：
-- **永不断联**：地铁、电梯、信号差的角落，统统不掉线
-- **tmux 自动恢复**：切回来时 session 还在，terminal 状态完美保留
-- **Coding Agent 随时在线**：随时掏手机 vibe coding
+对比了 blink 和 terminus：blink 界面太复杂，terminus UI 太老气。Moshi 界面简洁颜值高，再加上 mosh 永不断联和 tmux sessions 自动发现，决定付费。
 
 ## 配图
 
