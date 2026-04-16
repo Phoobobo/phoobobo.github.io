@@ -50,9 +50,9 @@ tags:
 
 Moshi 配置很简单，坑全在 tailscale。只要 tailscale 社区版+服务启动+顺序对，Moshi 就能愉快 vibe coding。
 
-## 5. 让手机也能科学上网：Tailscale Exit Node
+## 5. 不影响手机科学上网：Tailscale Exit Node
 
-如果你电脑上同时用着别的 VPN 和 tailscale，而手机只能连一个 VPN，但又想让手机和电脑一样科学上网，可以把电脑的 tailscale 设置成 exit node，然后让手机 tailscale 连它，这样手机的流量就都走电脑了，和电脑体验一致。
+如果手机只能连一个 VPN，但想让手机和电脑一样科学上网，可以把电脑的 tailscale 设置成 exit node，让手机 tailscale 连它，这样手机的流量就都走电脑了，不影响手机的科学上网。
 
 ### 操作细节
 
