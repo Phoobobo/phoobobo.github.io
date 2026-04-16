@@ -14,6 +14,7 @@ A Hexo blog powered by Butterfly theme, deployed on GitHub Pages.
 1. Edit `source/_posts/*.md` on `master` branch
 2. Push → GitHub Actions builds automatically
 3. Deploys to `gh-pages`
+4. GitHub Pages serves from `gh-pages`
 
 ## Local Development
 
@@ -35,3 +36,4 @@ git add . && git commit -m "..." && git push  # Push changes
 - Don't edit files in `public/` directly (auto-generated)
 - Theme files are in `themes/butterfly/`
 - Add images to `source/uploads/` or use external URLs
+- `_config.yml` is auto-generated from `_hexo_config.yml` during build

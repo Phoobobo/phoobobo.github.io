@@ -46,13 +46,28 @@ npx hexo generate    # Generate static files
 
 ## Build & Deploy
 
-Push to `main` branch → GitHub Actions automatically:
+Push to `master` branch → GitHub Actions automatically:
 1. Installs dependencies
 2. Runs `hexo clean && hexo generate`
-3. Deploys to GitHub Pages
+3. Deploys to `gh-pages` branch
+4. GitHub Pages serves from `gh-pages`
+
+**Important: The workflow triggers on `master` branch, not `main`.**
+
+## Troubleshooting
+
+**404 errors after push?**
+- Check that workflow ran: GitHub → Actions tab
+- Check if workflow triggers on correct branch (`master`)
+- Check `gh-pages` branch has HTML files (not just `.nojekyll`)
+
+**hexo generate not working locally?**
+- Run `npm install` to install dependencies
+- The project requires `hexo-renderer-marked` and `hexo-generator-index`
 
 ## Notes
 
 - Don't edit files in `public/` directly (they're auto-generated)
 - Theme files in `themes/butterfly/` are committed to the repo
 - Add images to `source/uploads/` or use external URLs
+- `_config.yml` is auto-generated from `_hexo_config.yml` during build
