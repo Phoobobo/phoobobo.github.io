@@ -70,7 +70,64 @@ sudo tailscale up --advertise-exit-node --ssh
 
 设置方法可参考 tailscale 官方文档：[Exit Nodes](https://tailscale.com/kb/1103/exit-nodes/)
 
-## 6. 为什么最终选择了 Moshi？
+## 6. 电脑端配置：Mosh + tmux
+
+Moshi 优先使用 Mosh 连接（永不断联），配合 tmux 管理 session。
+
+### 基础要求
+
+- `tmux` 已安装
+- `mosh-server` 已安装（通过 `brew install mosh`）
+- 至少有一个 tmux session 存在（Moshi 连接时会显示 session 列表）
+
+### 推荐 tmux 配置
+
+```bash
+# ~/.tmux.conf
+
+# 大缓冲
+set -g history-limit 100000
+
+# 鼠标支持
+set -g mouse on
+
+# 窗口标题（Moshi 会显示）
+set -g set-titles on
+set -g set-titles-string "#I: #T"
+
+# 从 1 开始编号
+set -g base-index 1
+setw -g pane-base-index 1
+```
+
+### moshi-hooks（可选）
+
+支持 Claude Code、Copilot CLI 等 Coding Agent 的通知推送：
+
+```bash
+# 需要先安装 bun
+brew install bun
+
+# 安装 moshi-hooks
+bunx moshi-hooks setup
+bunx moshi-hooks token <YOUR_TOKEN>
+
+# 可选：支持特定 agent
+bunx moshi-hooks setup --codex
+bunx moshi-hooks setup --opencode
+```
+
+### 快速创建 tmux session
+
+```bash
+# 创建一个标准 session
+tmux new-session -d -s work -c ~/work
+tmux split-window -h -t work -c ~/work
+tmux new-window -t work -n agent -c ~/work/agent
+tmux new-window -t work -n shell -c ~/work
+```
+
+## 7. 为什么最终选择了 Moshi？
 
 免费的 mosh 连接次数用完之后，对比了 blink 和 terminus：blink 界面太复杂，terminus UI 太老气。Moshi 界面简洁颜值高，再加上 mosh 永不断联和 tmux sessions 自动发现，决定付费。
 
