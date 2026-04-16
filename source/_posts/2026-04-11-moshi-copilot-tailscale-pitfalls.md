@@ -18,26 +18,15 @@ tags:
 
 <!--more-->
 
-## 0. 为什么最终选择了 Moshi 付费订阅？
+## 0. 先看官方文档
 
-免费试用期间只能用 ssh 连接，用着用着发现 ssh 断联是家常便饭——电梯里晃一下断了，等地铁时断了，信号不好时断了。每次都要重新连接、重新进入 tmux session，体验碎成渣。
+建议先通读官方教程，再来看这篇踩坑记录：
 
-于是对比了其他终端 app：
+**[Mac Remote Endless Agent Setup](https://getmoshi.app/articles/mac-remote-endless-agent-setup)**
 
-| App | 价格 | 界面 | Mosh | 我的选择 |
-|-----|------|------|------|---------|
-| **Moshi** | $8/月起 | 简洁现代 | ✅ | ✅ |
-| Blink | $10/月起 | 功能多但复杂 | ✅ | ❌ |
-| Terminus | $10/月起 | 老派土气 | ✅ | ❌ |
+**[tailscale 官方文档](https://tailscale.com/kb/)**
 
-Blink 和 Terminus 虽然也有 mosh，但要么界面太复杂，要么 UI 太丑。最关键的是：**Moshi 最便宜**。
-
-订阅之后，mosh 连接 + tmux sessions 自动发现，体验直接起飞：
-- **永不断联**：地铁、电梯、信号差的角落，统统不掉线
-- **tmux 自动恢复**：切回来时 session 还在，terminal 状态完美保留
-- **Copilot 随时在线**：随时掏手机 vibe coding
-
-付费 Moshi + Tailscale，是目前移动 Copilot coding 的最优解。
+官方文档讲了 what，本篇讲的是 why 和坑。
 
 ## 1. tailscale 一定要装社区版！
 
@@ -75,15 +64,31 @@ sudo tailscale up --advertise-exit-node --ssh
 
 设置方法可参考 tailscale 官方文档：[Exit Nodes](https://tailscale.com/kb/1103/exit-nodes/)
 
+## 6. 为什么最终选择了 Moshi 付费订阅？
+
+免费试用期间只能用 ssh 连接，用着用着发现 ssh 断联是家常便饭——电梯里晃一下断了，等地铁时断了，信号不好时断了。每次都要重新连接、重新进入 tmux session，体验碎成渣。
+
+于是对比了其他终端 app：
+
+| App | 价格 | 界面 | Mosh | 我的选择 |
+|-----|------|------|------|---------|
+| **Moshi** | $8/月起 | 简洁现代 | ✅ | ✅ |
+| Blink | $10/月起 | 功能多但复杂 | ✅ | ❌ |
+| Terminus | $10/月起 | 老派土气 | ✅ | ❌ |
+
+Blink 和 Terminus 虽然也有 mosh，但要么界面太复杂，要么 UI 太丑。最关键的是：**Moshi 最便宜**。
+
+订阅之后，mosh 连接 + tmux sessions 自动发现，体验直接起飞：
+- **永不断联**：地铁、电梯、信号差的角落，统统不掉线
+- **tmux 自动恢复**：切回来时 session 还在，terminal 状态完美保留
+- **Copilot 随时在线**：随时掏手机 vibe coding
+
+付费 Moshi + Tailscale，是目前移动 Copilot coding 的最优解。
+
 ## 配图
 
 ![tailscale社区版安装命令](/uploads/tailscale-install.png)
 
 ![Moshi连接成功界面](/uploads/moshi-success.png)
-
-## 参考链接
-
-- [官方教程：Mac Remote Endless Agent Setup](https://getmoshi.app/articles/mac-remote-endless-agent-setup)
-- [tailscale 官方文档](https://tailscale.com/kb/)
 
 祝你少踩坑，随时随地 vibe coding！
